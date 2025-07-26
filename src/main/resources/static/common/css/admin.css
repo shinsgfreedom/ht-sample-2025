@@ -1,0 +1,59 @@
+@charset "utf-8";
+
+html.adminHtml, .adminHtml body {background: #fff;}
+html.adminHtml, .adminHtml body,
+.adminHtml #header,
+.adminHtml #contents,
+.adminHtml #contents .content,
+.adminHtml #footer {min-width: 1374px;}
+.adminHtml #contents .content {width: 1374px;}
+.adminHtml #wrap .visual {height: 178px;}
+.adminHtml #wrap #contents .content {margin-top: 28px;}
+.adminHtml #wrap #footer {background-color: #f0f1f0; border-top: 0 none; padding: 36px 0;}
+.adminHtml #wrap .btn-topmove {width: 52px; height: 52px; border-radius: 52px; border: 1px solid #d5d5d5; background-color: #f0f1f0; background-image: url(../../common/images/common/ico-topmove2.png); box-sizing: border-box;}
+.adminHtml #wrap .btn-topmove.show {bottom: 178px;}
+.adminHtml #wrap .btn-topmove:hover {background-color: #dadada;}
+
+.adminHtml .select,
+.adminHtml .input1,
+.adminHtml .textarea1,
+.adminHtml .textareabox {border-color: #d3d3d3; border-radius: 3px;}
+.adminHtml .select { background-image: url(../../common/images/common/ico-sel3.png);}
+.adminHtml .input1 {}
+.adminHtml .select, .adminHtml .input1,
+.admin-page-search table .select {height: 32px; line-height: 30px; background-color: #fff;}
+.admin-page-search table .input1 {height: 32px; line-height: 30px; background-color: #fff;}
+
+.adminHtml .textareabox:hover, .adminHtml .textareabox.active,
+.adminHtml .input1:hover, .adminHtml .input1-datepicker:hover, .adminHtml .textarea1:hover, .adminHtml .select:hover,
+.adminHtml .input1:focus, .adminHtml .input1-datepicker:focus, .adminHtml .textarea1:focus, .adminHtml .select:focus {border-color: #444;}
+.textareabox.disabled, .textareabox.disabled:hover, .textareabox.disabled:focus
+.adminHtml .input1:disabled, .adminHtml .input1-datepicker:disabled, .adminHtml .textarea1:disabled, .adminHtml .select:disabled {opacity: .5; border-color: #ccc;}
+
+.adminHtml .bottom-area {padding-top: 1px;}
+.adminHtml .bottom-area .tagbox .label {font-size: 16px; line-height: 21px; color: #4c4c4c; font-weight: 300; letter-spacing: 0.005em; word-spacing: -0.02em; padding: 0 9px 4px 13px; position: relative;}
+.adminHtml .bottom-area .tagbox .label::before {content: ''; display: block; width: 5px; height: 3px; background-color: #878585; position: absolute; left: 1px; top: 9px;}
+.adminHtml .bottom-area .tagbox .select {font-size: 16px; height: 32px; padding-left: 13px; background-image: url(../../common/images/common/ico-sel4.png);}
+
+.adminHtml .paging {position: relative; text-align: center; padding-top: 11px; padding-bottom: 16px;}
+.adminHtml .bottom-area + .paging {margin-top: -9px; padding-top: 0; padding-left: 220px; padding-right: 220px;}
+.adminHtml .paging .linkbox {font-size: 0;}
+.adminHtml .paging .linkbox [class^="btn-"],
+.adminHtml .paging .linkbox .link {display: inline-block; vertical-align: middle;}
+.adminHtml .paging .linkbox [class^="btn-"] {width: 30px; height: 30px; border-radius: 4px; border: 1px solid #d5d5d5; background-color: #fff; background-position: center center; background-repeat: no-repeat; box-sizing: border-box;}
+.adminHtml .paging .linkbox .btn-pprev {background-image: url(../../common/images/ico/ico-pn3-pprev.png);}
+.adminHtml .paging .linkbox .btn-prev {background-image: url(../../common/images/ico/ico-pn3-prev.png);}
+.adminHtml .paging .linkbox .btn-next {background-image: url(../../common/images/ico/ico-pn3-next.png);}
+.adminHtml .paging .linkbox .btn-nnext {background-image: url(../../common/images/ico/ico-pn3-nnext.png);}
+.adminHtml .paging .linkbox [class^="btn-"]:hover {background-color: #dadada;}
+.adminHtml .paging .linkbox .link {min-width: 30px; text-align: center; font-size: 15px; line-height: 28px; border-radius: 4px; padding: 0 3px; box-sizing: border-box;}
+.adminHtml .paging .linkbox strong.link {background-color: #fd8238; color: #fff; font-weight: 400;}
+.adminHtml .paging .linkbox a.link {}
+.adminHtml .paging .linkbox a.link:hover {background-color: #fd8238; color: #fff;}
+.adminHtml .paging .linkbox .link + .link {margin: 0 2px;}
+.adminHtml .paging .linkbox [class^="btn-"] + .link,
+.adminHtml .paging .linkbox .link + [class^="btn-"],
+.adminHtml .paging .linkbox [class^="btn-"] + [class^="btn-"] {margin-left: 4px;}
+
+.admin-page .titCont-box .contbox .border-box.searchtype {padding: 17px 24px 18px 29px;}
+.admin-page .titCont-box .contbox .border-box.type1 + .border-box.type1 {margin-top: 11px;}

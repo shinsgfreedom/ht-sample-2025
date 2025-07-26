@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+
+/********************** Noto Sans KR **********************/
+@font-face {
+    font-family:'Noto Sans KR';
+    font-weight: 100;
+    src: url(NotoSansKR-Thin.woff) format('woff')
+}
+
+@font-face {
+    font-family:'Noto Sans KR';
+    font-weight: 300;
+    src: url(NotoSansKR-Light.woff) format('woff')
+}
+
+@font-face {
+    font-family:'Noto Sans KR';
+    font-weight: normal;
+    src: url(NotoSansKR-Regular.woff) format('woff')
+}
+
+@font-face {
+    font-family:'Noto Sans KR';
+    font-weight: 500;
+    src: url(NotoSansKR-Medium.woff) format('woff')
+}
+
+@font-face {
+    font-family:'Noto Sans KR';
+    font-weight: bold;
+    src: url(NotoSansKR-Bold.woff) format('woff')
+}
+@font-face {
+    font-family:'Noto Sans KR';
+    font-weight: 600;
+    src: url(NotoSansKR-Bold.woff) format('woff')
+}
+@font-face {
+    font-family:'Noto Sans KR';
+    font-weight: 700;
+    src: url(NotoSansKR-Bold.woff) format('woff')
+}
+
+@font-face {
+    font-family:'Noto Sans KR';
+    font-weight: 900;
+    src: url(NotoSansKR-Black.woff) format('woff')
+}
+
+/********************** HankookTire **********************/
+@font-face {
+    font-family:'HankookTire';
+    font-weight: normal;
+    src: url(HankookTTFRegular.eot);
+    src: local(※), url(HankookTTFRegular.eot?#iefix) format('embedded-opentype'),
+         url(HankookTTFRegular.woff) format('woff'),
+         url(HankookRegular.otf) format('truetype');
+}
+@font-face {
+    font-family:'HankookTire';
+    font-weight: normal;
+    font-style:italic;
+    src: url(HankookTTFRegularOblique.eot);
+    src: local(※), url(HankookTTFRegularOblique.eot?#iefix) format('embedded-opentype'),
+         url(HankookTTFRegularOblique.woff) format('woff'),
+         url(HankookRegularOblique.otf) format('truetype');
+}
+@font-face {
+    font-family:'HankookTire';
+    font-weight: 500;
+    src: url(HankookTTFMedium.eot);
+    src: local(※), url(HankookTTFMedium.eot?#iefix) format('embedded-opentype'),
+         url(HankookTTFMedium.woff) format('woff'),
+         url(HankookMedium.otf) format('truetype');
+}
+@font-face {
+    font-family:'HankookTire';
+    font-weight: 500;
+    font-style:italic;
+    src: url(HankookTTFMediumOblique.eot);
+    src: local(※), url(HankookTTFMediumOblique.eot?#iefix) format('embedded-opentype'),
+         url(HankookTTFMediumOblique.woff) format('woff'),
+         url(HankookMediumOblique.otf) format('truetype');
+}
+@font-face {
+    font-family:'HankookTire';
+    font-weight: bold;
+    src: url(HankookTTFSemibold.eot);
+    src: local(※), url(HankookTTFSemibold.eot?#iefix) format('embedded-opentype'),
+         url(HankookTTFSemibold.woff) format('woff'),
+         url(HankookSemibold.otf) format('truetype');
+}
+@font-face {
+    font-family:'HankookTire';
+    font-weight: bold;
+    font-style:italic;
+    src: url(HankookTTFSemiboldOblique.eot);
+    src: local(※), url(HankookTTFSemiboldOblique.eot?#iefix) format('embedded-opentype'),
+         url(HankookTTFSemiboldOblique.woff) format('woff'),
+         url(HankookSemiboldOblique.otf) format('truetype');
+}

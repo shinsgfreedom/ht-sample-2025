@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- TODO mapper xml 샘플입니다. 해당 프로젝트 환경에 맞게 꼭 변경해서 사용하세요!-->
+<mapper namespace="com.hankooktech.shep.main.MainMapper">
+	<select id="list" resultType="com.hankooktech.fc.biz_common.group.GroupDTO$Response" parameterType="hashmap">
+		SELECT 1 from DUAL
+	</select>
+	
+	<select id="selectUserTab" resultType="map" parameterType="string">
+		/* MainMapper.selectUsersTab */
+		SELECT
+			MENU_ID
+			, LINK_TYPE
+		FROM T_USER_TAB
+		WHERE USER_ID = #{userId}
+		ORDER BY CREATE_DATE
+	</select>
+	
+	<insert id="insertUserTab" parameterType="map">
+		/* MainMapper.insertUserTab */
+		INSERT INTO T_USER_TAB(
+			USER_TAB_UID
+			, USER_ID
+			, MENU_ID
+			, LINK_TYPE
+			, CREATE_DATE
+		) VALUES (
+			#{uuid}
+			, #{userId}
+			, (SELECT ID FROM FC_MENU WHERE ID = #{menuId} OR MENU_ID = #{menuId} )
+			, #{linkType}
+			, SYSDATE
+		)
+	</insert>
+	
+	<update id="deleteUserTab" parameterType="map">
+		/* MainMapper.deleteUserTab */
+		DELETE FROM T_USER_TAB
+		WHERE USER_ID = #{userId}
+		AND MENU_ID = (SELECT ID FROM FC_MENU WHERE ID = #{menuId} OR MENU_ID = #{menuId} )
+	</update>
+	
+	<select id="getUserConfigDetail" resultType="com.hankooktech.shep.common.result.HTDataMap" parameterType="string">
+		/* MainMapper.getUserConfigDetail */
+		SELECT
+			USER_CONFIG_UID
+			, USER_ID		
+			, TOP_LAYER_DISPLAY
+			, QUICK_LINK_DISPLAY
+			, QUICK_MENU_DISPLAY
+			, MY_MENU_DISPLAY
+			, MY_MENU_FIX
+			, AUTOCOMPLETE
+			, CASE WHEN TOP_LAYER_DISPLAY = 'Y' AND QUICK_LINK_DISPLAY = 'Y' AND QUICK_MENU_DISPLAY = 'Y' AND MY_MENU_DISPLAY = 'Y'
+				THEN 'Y' ELSE 'N' END AS QUICK_ALL
+			, MEMBER_AUTO_SAVE
+			, PORTLET_DYNAMIC_LOAD
+		FROM T_USER_CONFIG
+		WHERE USER_ID = #{userId}
+		AND DEL_YN = 'N'
+	</select>
+	
+	<update id="saveUserConfig" parameterType="map">
+		/* MainMapper.saveUserConfig */
+		MERGE INTO T_USER_CONFIG T
+		USING (
+			SELECT
+				#{userId} AS USER_ID		
+				, #{topLayerDisplay} AS TOP_LAYER_DISPLAY
+				, #{quickLinkDisplay} AS QUICK_LINK_DISPLAY
+				, #{quickMenuDisplay} AS QUICK_MENU_DISPLAY
+				, #{myMenuDisplay} AS MY_MENU_DISPLAY
+				, #{myMenuFix} AS MY_MENU_FIX
+				, #{autocomplete} AS AUTOCOMPLETE
+				, #{memberAutoSave} AS MEMBER_AUTO_SAVE
+				, #{portletDynamicLoad} AS PORTLET_DYNAMIC_LOAD
+			FROM DUAL
+		) S
+		ON (
+			T.USER_ID = S.USER_ID
+		)
+		WHEN MATCHED THEN
+			UPDATE SET
+				T.UPDATE_DATE = SYSDATE
+			<if test='topLayerDisplay != null and topLayerDisplay neq "" '>
+				, T.TOP_LAYER_DISPLAY = S.TOP_LAYER_DISPLAY
+			</if>
+			<if test='quickLinkDisplay != null and quickLinkDisplay neq "" '>
+				, T.QUICK_LINK_DISPLAY = S.QUICK_LINK_DISPLAY
+			</if>
+			<if test='quickMenuDisplay != null and quickMenuDisplay neq "" '>
+				, T.QUICK_MENU_DISPLAY = S.QUICK_MENU_DISPLAY
+			</if>
+			<if test='myMenuDisplay != null and myMenuDisplay neq "" '>
+				, T.MY_MENU_DISPLAY = S.MY_MENU_DISPLAY
+			</if>
+			<if test='myMenuFix != null and myMenuFix neq "" '>
+				, T.MY_MENU_FIX = S.MY_MENU_FIX
+			</if>
+			<if test='autocomplete != null and autocomplete neq "" '>
+				, T.AUTOCOMPLETE = S.AUTOCOMPLETE
+			</if>
+			<if test='memberAutoSave != null and memberAutoSave neq "" '>
+				, T.MEMBER_AUTO_SAVE = S.MEMBER_AUTO_SAVE
+			</if>
+			<if test='portletDynamicLoad != null and portletDynamicLoad neq "" '>
+				, T.PORTLET_DYNAMIC_LOAD = S.PORTLET_DYNAMIC_LOAD
+			</if>
+		WHEN NOT MATCHED THEN
+			INSERT(
+				T.USER_CONFIG_UID, T.USER_ID, T.CREATE_DATE
+			<if test='topLayerDisplay != null and topLayerDisplay neq "" '>
+				, T.TOP_LAYER_DISPLAY
+			</if>
+			<if test='quickLinkDisplay != null and quickLinkDisplay neq "" '>
+				, T.QUICK_LINK_DISPLAY
+			</if>
+			<if test='quickMenuDisplay != null and quickMenuDisplay neq "" '>
+				, T.QUICK_MENU_DISPLAY
+			</if>
+			<if test='myMenuDisplay != null and myMenuDisplay neq "" '>
+				, T.MY_MENU_DISPLAY
+			</if>
+			<if test='myMenuFix != null and myMenuFix neq "" '>
+				, T.MY_MENU_FIX
+			</if>
+			<if test='autocomplete != null and autocomplete neq "" '>
+				, T.AUTOCOMPLETE
+			</if>
+			<if test='memberAutoSave != null and memberAutoSave neq "" '>
+				, T.MEMBER_AUTO_SAVE
+			</if>
+			<if test='portletDynamicLoad != null and portletDynamicLoad neq "" '>
+				, T.PORTLET_DYNAMIC_LOAD
+			</if>
+			) VALUES (
+				SYS_GUID(), S.USER_ID, SYSDATE
+			<if test='topLayerDisplay != null and topLayerDisplay neq "" '>
+				, S.TOP_LAYER_DISPLAY
+			</if>
+			<if test='quickLinkDisplay != null and quickLinkDisplay neq "" '>
+				, S.QUICK_LINK_DISPLAY
+			</if>
+			<if test='quickMenuDisplay != null and quickMenuDisplay neq "" '>
+				, S.QUICK_MENU_DISPLAY
+			</if>
+			<if test='myMenuDisplay != null and myMenuDisplay neq "" '>
+				, S.MY_MENU_DISPLAY
+			</if>
+			<if test='myMenuFix != null and myMenuFix neq "" '>
+				, S.MY_MENU_FIX
+			</if>
+			<if test='autocomplete != null and autocomplete neq "" '>
+				, S.AUTOCOMPLETE
+			</if>
+			<if test='memberAutoSave != null and memberAutoSave neq "" '>
+				, S.MEMBER_AUTO_SAVE
+			</if>
+			<if test='portletDynamicLoad != null and portletDynamicLoad neq "" '>
+				, S.PORTLET_DYNAMIC_LOAD
+			</if>
+			)
+	</update>
+	
+	<select id="selectSearchWords" resultType="map" parameterType="string">
+		/* MainMapper.selectSearchWords */
+		SELECT
+			A.USER_ID
+			, A.SEARCH_WORD
+			, TO_CHAR(A.CREATE_DATE, 'MM-DD') AS CREATE_DATE
+		FROM T_INTEGRATED_SEARCH_WORD A
+		WHERE A.USER_ID = #{userId}
+		ORDER BY A.CREATE_DATE
+	</select>
+	
+	<insert id="insertSearchWord" parameterType="map">
+		/* MainMapper.insertSearchWord */
+		MERGE INTO T_INTEGRATED_SEARCH_WORD T
+		USING (
+			SELECT
+				#{userUuid} AS USER_ID
+				, #{searchWord} AS SEARCH_WORD
+			FROM DUAL
+		) S
+		ON (
+			T.USER_ID = S.USER_ID
+			AND T.SEARCH_WORD = S.SEARCH_WORD
+		)
+		WHEN MATCHED THEN
+			UPDATE SET
+				T.CREATE_DATE = T.CREATE_DATE 
+		WHEN NOT MATCHED THEN
+			INSERT (
+				T.USER_ID, T.SEARCH_WORD, T.CREATE_DATE
+			) VALUES (
+				S.USER_ID, S.SEARCH_WORD, SYSDATE
+			)
+	</insert>
+	
+	<delete id="deleteSearchWord" parameterType="map">
+		/* MainMapper.deleteSearchWord */
+		DELETE FROM T_INTEGRATED_SEARCH_WORD
+		WHERE USER_ID = #{userUuid}
+		AND SEARCH_WORD = #{searchWord}
+	</delete>
+	
+	<delete id="deleteSearchWordByTen" parameterType="map">
+		/* MainMapper.deleteSearchWordByTen */
+		DELETE FROM T_INTEGRATED_SEARCH_WORD
+		WHERE USER_ID = #{userUuid}
+		AND SEARCH_WORD IN (
+			SELECT SEARCH_WORD
+			FROM (
+				SELECT 
+					SEARCH_WORD
+					, CREATE_DATE
+					, ROW_NUMBER() OVER (ORDER BY CREATE_DATE DESC) AS RN
+				FROM T_INTEGRATED_SEARCH_WORD
+				WHERE USER_ID = #{userUuid}
+			)
+			WHERE RN <![CDATA[ > ]]> 25
+		)
+	</delete>
+</mapper>

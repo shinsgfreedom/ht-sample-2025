@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>SHE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 화면용 css : 공통에서 제공중이니 개발시 삭제 -->
+<link rel="stylesheet" href="../../core/core-admin.css" type="text/css">
+<link rel="stylesheet" href="../../core/fc-tab.css" type="text/css">
+<link rel="stylesheet" href="../../common_f/css/select2.min.css" type="text/css">
+<link rel="stylesheet" href="../../common_f/css/select2-bootstrap4.min.css" type="text/css">
+
+<!-- front 기본 css -->
+<link rel="stylesheet" href="../../common_f/css/style.css" type="text/css">
+<link rel="stylesheet" href="../../front/css/front.css" type="text/css">
+
+
+<!-- 화면용 jquery 버전 : 공통에서 제공중이니 개발시 삭제 -->
+<script type="text/javascript" src="../../common_f/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../../common_f/js/select2.min.js"></script>
+
+<!-- front 기본 js -->
+<script type="text/javascript" src="../../common_f/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../common_f/js/common-ui.js"></script>
+
+<script type="text/javascript" src="../../front/js/front-ui.js"></script>
+
+<script>
+    $(function(){
+        $('.select2').select2({
+        closeOnSelect:false,
+        placeholder: "Select",
+        });//퍼블용 테스트(개발시 개발소스에 맞게)
+    })
+
+</script>
+</head>
+<body>
+
+
+<!-- wrap -->
+<div id="wrap">
+
+	<!--header-->
+	<div id="header">
+		헤더
+	</div>
+	<!--//header-->
+
+	<!--개발소스에 맞춘-->
+	<div id="historyTab">
+		<!-- 히스토리 탭 -->
+		<ul class="fc-tab">
+			<!--
+				기본탭, Dashboard탭 공통 : 활성화시 li에 selected 추가
+				기본탭 : li 그대로 사용
+				Dashboard탭 : li에 type-ds 클래스 추가
+			-->
+			<li class="selected"><!--selected : 활성화시 추가-->
+				<span class="title">기본 active Tab</span>
+				<span class="fc-tab-right-control">
+					<i class="fas fa-redo-alt" ref="refresh"></i>
+					<i class="fas fa-expand" ref="expand"></i>
+					<i class="fas fa-times" ref="close"></i>
+				</span>
+			</li>
+			<li>
+				<span class="title">Tab Name Tab Name Tab Name</span>
+				<span class="fc-tab-right-control">
+					<i class="fas fa-redo-alt" ref="refresh"></i>
+					<i class="fas fa-expand" ref="expand"></i>
+					<i class="fas fa-times" ref="close"></i>
+				</span>
+			</li>
+			<li>
+				<span class="title">Tab Name</span>
+				<span class="fc-tab-right-control">
+					<i class="fas fa-redo-alt" ref="refresh"></i>
+					<i class="fas fa-expand" ref="expand"></i>
+					<i class="fas fa-times" ref="close"></i>
+				</span>
+			</li>
+		</ul>
+		<!-- 히스토리 탭 -->
+	</div>
+	<!-- //history tab -->
+
+	<!-- contents -->
+	<div id="contents">
+		
+		<div class="content">
+			<div class="cont-lc-area">
+
+				<!-- 상세 컨텐츠 -->
+				<div class="lc-rightbox">
+					<div class="fc-tab-content">
+						<div class="fc-tab-content-item">
+							<!-- 컨텐츠 영역 -->
+
+							<div class="page-head">
+								<h2 class="page-title">평가그룹 Master</h2>
+								<div class="right">
+									<div class="cont-btn-box">
+										<a href="#" class="btn-l type2">
+											<i class="ico ico-plus-16-16"></i>
+											<span class="txt">그룹 추가</span>
+										</a>
+										<a href="#" class="btn-l type2">
+											<i class="ico ico-minus-18-18"></i>
+											<span class="txt fcC20000">그룹 삭제</span>
+										</a>
+										<a href="#" class="btn-l type1">
+											<i class="ico ico-file-16-16"></i>
+											<span class="txt">저장</span>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<!-- 페이지 컨텐츠 -->
+							<div class="page-cont">
+
+								<!--cont-col-box-->
+								<div class="cont-col-box">
+									<div class="box-body">
+										<!--cont-table-box-->
+										<div class="cont-table-box type-border">
+											<div class="box-body">
+												<div class="table-style-box">
+													<table>
+														<colgroup>
+															<col style="width: 80px;"/>
+															<col style="width: 21%;"/>
+															<col style="width: 21%;"/>
+															<col />
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">
+																	<label class="chkBox solo">
+																		<input type="checkbox" />
+																		<span class="label">check</span>
+																	</label>
+																</th>
+																<th scope="col">연도</th>
+																<th scope="col">시기</th>
+																<th scope="col">평가그룹</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td>
+																	<label class="chkBox solo">
+																		<input type="checkbox" />
+																		<span class="label">check</span>
+																	</label>
+																</td>
+																<td>2025</td>
+																<td>상반기</td>
+																<td>안전보건관리책임자A</td>
+															</tr>
+															<tr>
+																<td>
+																	<label class="chkBox solo">
+																		<input type="checkbox" />
+																		<span class="label">check</span>
+																	</label>
+																</td>
+																<td>2025</td>
+																<td>상반기</td>
+																<td>안전보건관리책임자B</td>
+															</tr>
+															<tr>
+																<td>
+																	<label class="chkBox solo">
+																		<input type="checkbox" />
+																		<span class="label">check</span>
+																	</label>
+																</td>
+																<td>2025</td>
+																<td>상반기</td>
+																<td>관리감독자</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+										<!--//cont-table-box-->
+									</div>
+								</div>
+								<!--//cont-col-box-->
+
+							</div>
+							<!-- //페이지 컨텐츠 -->
+
+							<!-- //컨텐츠 영역 -->
+						</div>
+					</div>
+				</div>
+				<!-- //상세 컨텐츠 -->
+			</div>
+		</div>
+	</div>
+	<!-- //contents -->
+
+	<!-- footer -->	
+	<div id="footer">
+		푸터
+	</div>
+	<!--// footer -->
+
+</div>
+<!--// wrap -->
+
+</body>
+</html>

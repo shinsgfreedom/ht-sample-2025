@@ -1,0 +1,27 @@
+logging:
+  level:
+    org.apache.http: debug
+    com.hankooktech: debug
+    jdbc:
+      sqlonly: debug
+      sqltiming: off
+      audit: off
+      resultset: off
+      resultsettable: off
+      connection: off
+server.tomcat.additional-tld-skip-patterns: oraclepki.jar
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  profiles:
+    include: fc # HTG Framework 설정
+    active: local
+mybatis:
+  mapper-locations: classpath*:mappers/**/*.xml
+fc-config:
+  login-failure-redirect-page: /login.html # 페이지 예외- 권한없음(HTTP 401 Or 403)이 발생한경우
+  access-token-expire-seconds: 86400  #1 day
+  refresh-token-expire-seconds: 604400  #7 days
+  token-secret-key: secret-key-for-sign   #인증 토큰 사인에 사용되는 키(64자리 영문숫자조합). 반드시 수정해서 사용 할 것

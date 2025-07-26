@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+    <definition name="main-tpl" template="/WEB-INF/layouts/main/layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/layouts/main/header.jsp"/>
+        <put-attribute name="scripts" value="/WEB-INF/layouts/main/scripts.jsp"/>
+        <put-attribute name="styles" value="/WEB-INF/layouts/main/styles.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/layouts/main/footer.jsp"/>
+    </definition>
+    <definition name="tab-main-tpl" template="/WEB-INF/layouts/main/layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/layouts/main/header.jsp"/>
+        <put-attribute name="scripts" value="/WEB-INF/layouts/main/scripts.jsp"/>
+        <put-attribute name="styles" value="/WEB-INF/layouts/main/styles.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/layouts/main/footer.jsp"/>
+    </definition>
+
+    <definition name="popup-tpl" template="/WEB-INF/layouts/popup/layout.jsp">
+        <put-attribute name="scripts" value="/WEB-INF/layouts/popup/scripts.jsp"/>
+        <put-attribute name="styles" value="/WEB-INF/layouts/popup/styles.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/layouts/popup/footer.jsp"/>
+    </definition>
+
+    <definition name="shep-tpl/*/*" template="/WEB-INF/layouts/default/none.jsp">
+        <put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- ## -->
+    <definition name="views/*/*" extends="shep-tpl">
+        <put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+    </definition>
+    <definition name="views/*/popup/*" extends="popup-tpl">
+        <put-attribute name="body" value="/WEB-INF/views/{1}/popup/{2}.jsp"/>
+    </definition>
+
+    <definition name="main/*" extends="main-tpl">
+        <put-attribute name="body" value="/WEB-INF/views/main/{1}.jsp"/>
+    </definition>
+<!--    <definition name="tab-main/*" template="/WEB-INF/layouts/main/none.jsp">-->
+<!--        <put-attribute name="body" value="/WEB-INF/views/main/{1}.jsp"/>-->
+<!--    </definition>-->
+<!--    <definition name="search/popup/*" extends="search-popup-tpl">-->
+<!--        <put-attribute name="body" value="/WEB-INF/views/search/popup/{1}.jsp"/>-->
+<!--    </definition>-->
+
+
+
+
+<!--    <definition name="portlet-tpl" template="/WEB-INF/layouts/portlet/layout.jsp">-->
+<!--        <put-attribute name="scripts" value="/WEB-INF/layouts/portlet/scripts.jsp"/>-->
+<!--        <put-attribute name="styles" value="/WEB-INF/layouts/portlet/styles.jsp"/>-->
+<!--    </definition>-->
+
+<!--    <definition name="portlet/*" extends="portlet-tpl">-->
+<!--        <put-attribute name="body" value="/WEB-INF/views/portlet/{1}.jsp"/>-->
+<!--    </definition>-->
+
+    <!-- 관리자레이아웃 시작 --><!-- core -->
+    <definition name="core-tpl" template="/WEB-INF/layouts/core-layout/layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/layouts/core-layout/header.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/layouts/core-layout/footer.jsp"/>
+    </definition>
+
+    <definition name="core/*" extends="core-tpl">
+        <put-attribute name="body" value="/WEB-INF/core/views/{1}.jsp"/>
+    </definition>
+
+    <definition name="core/*/*" extends="core-tpl">
+        <put-attribute name="body" value="/WEB-INF/core/views/{1}/{2}.jsp"/>
+    </definition>
+
+    <definition name="base-popup-template" template="/WEB-INF/core/layouts/popup/layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/core/layouts/popup/header.jsp"/>
+        <put-attribute name="body" value=""/>
+    </definition>
+
+    <definition name="core/*/popup/*" extends="base-popup-template">
+        <put-attribute name="body" value="/WEB-INF/core/views/{1}/popup/{2}.jsp"/>
+    </definition>
+
+    <definition name="no-template" template="/WEB-INF/core/layouts/default/none.jsp">
+        <put-attribute name="body" value=""/>
+    </definition>
+
+</tiles-definitions>

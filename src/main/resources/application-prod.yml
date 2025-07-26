@@ -1,0 +1,68 @@
+spring:
+  datasource:
+    url: jdbc:log4jdbc:oracle:thin:@//202.31.8.76:1521/DHKDORA2
+    username: DDDUSER
+    password: ddd_votm12#
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+  servlet:
+    multipart:
+      max-file-size: 10000MB
+      max-request-size: 10000MB
+      location: /TOMCAT/upload/multipart/
+  data:
+    web:
+      pageable:
+        max-page-size: 20000
+fc-config:
+  o365-config:
+    server-url: http://202.31.8.55:8080/o365/
+    server-id: ddd
+    secret-key: f5d70d34808d
+    timeout-seconds: 10
+  snapshot-my-url: http://202.31.8.115 # "스냅샷 서버 -> 현재 서버"에 요청하기 위한 url origin, 사용하지않는경우에는 생략 가능 ex) http://10.8.8.8:8080
+  base-protocol: https://
+  base-url: //ddd.hankooktech.com
+  file-config:
+    file-root-path: /TOMCAT/upload # 파일 업로드 디렉토리
+    clear-garbage-files: false
+  sso:
+    ssid: 268   # sso 서버 발급 아이디
+    success-redirect-url: /MAIN/main.html   # sso 성공 후 이동할 첫 페이지
+    my-domain: ddd.hankooktech.com   # referer 체크를 위한 자신의 도메인(보안 체크시 사용)
+    arena-http-domain: http://arena.hankooktech.com   # 결제열람용 도메인
+    arena-https-domain: https://arena.hankooktech.com   # 결제상신용 도메인
+  notice-config:
+    server-name: ddd_dev
+    server-key: e21ff3375ba5431ebaebe1a626e832da
+    server-url: http://ws.cosmo.hankooktech.com:8095
+  approval-config:
+    system-id: DDD
+    system-key: CB08B74B-B90A-4E51-99B0-D4C46AA6219D
+    cosmo-url: https://cosmo-idp.hankooktech.com
+    mail-send-enabled: true
+    notice-send-enabled: true
+    test-mail-to:
+    test-notice-to:
+    my-appr-menu-key : MY_APPR_REOP
+    my-appr-menu-link : https://ddd.hankooktire.com/MY_APPR_REOP/index.html
+    sso-active : false
+    use-time: UTC
+search:
+  url: http://elasticsearch.hankooktech.com:8080/api/ddd/
+server:
+  error:
+    include-exception: true
+    include-stacktrace: always
+    path: /error
+    whitelabel.enabled: false
+batch:
+  jenkins:
+    auth: admin:1115a1dcfec34411b08e23a9f2940239ba
+unity-log:
+  system-id: DDD
+  system-key: C0F37A8EF82945FB989E4317EBB4B827
+  ssl-url: https://glas.hankooktech.com:8443
+cost-simulator:
+  url: https://costsimulator.hankooktech.com
+  id: DDD
+  key:  86C5E8A577DB4192B2A0F63BD4BC9B22

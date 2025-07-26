@@ -1,0 +1,402 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>SHE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 화면용 css : 공통에서 제공중이니 개발시 삭제 -->
+<link rel="stylesheet" href="../../core/core-admin.css" type="text/css">
+<link rel="stylesheet" href="../../core/fc-tab.css" type="text/css">
+<link rel="stylesheet" href="../../common_f/css/select2.min.css" type="text/css">
+<link rel="stylesheet" href="../../common_f/css/select2-bootstrap4.min.css" type="text/css">
+
+<!-- front 기본 css -->
+<link rel="stylesheet" href="../../common_f/css/style.css" type="text/css">
+<link rel="stylesheet" href="../../front/css/front.css" type="text/css">
+
+
+<!-- 화면용 jquery 버전 : 공통에서 제공중이니 개발시 삭제 -->
+<script type="text/javascript" src="../../common_f/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../../common_f/js/select2.min.js"></script>
+
+<!-- front 기본 js -->
+<script type="text/javascript" src="../../common_f/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../common_f/js/common-ui.js"></script>
+
+<script type="text/javascript" src="../../front/js/front-ui.js"></script>
+
+<script>
+	/*(문항관련 스크립트 참고 : 아래 class는 스크립트에만 영향, style은 class-class형식, sctrip는 classClass형식)*/
+
+    $(function(){
+        $('.select2').select2({//select2 있을시 추가?
+			closeOnSelect:false,
+			placeholder: "Select",
+        });//퍼블용 테스트(개발시 개발소스에 맞게)
+
+		/*문항관련 스크립트 Start*/
+		const $questionOptionBox = $('.questionOptionBox'); // 문항 전체 ul
+		const $templateBox = $('.questionOptionTemplates'); // 템플릿 ul (display:none)
+
+		//문항 추가
+		$(document).on('click', '.btnQuestionAdd', function () {
+			const $newItem = $templateBox.find('.questionTemplate').clone();
+
+			// 선택지 1개만 삽입
+			const $optionWrap = $newItem.find('.qnaListQbox');
+			$optionWrap.empty();
+			const $option = $templateBox.find('.optionTemplate').clone();
+			$option.find('input').val('');
+			$optionWrap.append($option);
+
+			// 질문 input 초기화
+			$newItem.find('input').val('');
+			$questionOptionBox.append($newItem);
+
+			updateQuestionNumbers();
+			toggleQuestionDeleteDisabled();
+			toggleOptionDeleteDisabled($optionWrap);
+			updateQuestionCount();
+		});
+
+		//문항 삭제
+		$(document).on('click', '.btnQuestionDelete', function () {
+			$(this).closest('.questionBox').remove();
+
+			updateQuestionNumbers();
+			toggleQuestionDeleteDisabled();
+			updateQuestionCount();
+
+			// 남은 문항들의 선택지 상태 갱신
+			$questionOptionBox.find('.questionBox').each(function () {
+			const $qnaList = $(this).find('.qnaListQbox');
+			toggleOptionDeleteDisabled($qnaList);
+			});
+		});
+
+		//선택지 추가
+		$(document).on('click', '.btnOptionAdd', function () {
+			const $optionWrap = $(this).closest('.questionBox').find('.qnaListQbox');
+			const $option = $templateBox.find('.optionTemplate').clone();
+			$option.find('input').val('');
+			$optionWrap.append($option);
+
+			toggleOptionDeleteDisabled($optionWrap);
+		});
+
+		//선택지 삭제
+		$(document).on('click', '.btnOptionDelete', function () {
+			const $optionWrap = $(this).closest('.qnaListQbox');
+			$(this).closest('.optionBox').remove();
+			toggleOptionDeleteDisabled($optionWrap);
+		});
+
+		//문항 번호 재정렬
+		function updateQuestionNumbers() {
+			$questionOptionBox.find('.questionBox').each(function (idx) {
+			$(this).find('.questionNo').text((idx + 1) + '.');
+			});
+		}
+
+		//문항 삭제 버튼 상태 (1개면 비활성화)
+		function toggleQuestionDeleteDisabled() {
+			const $btns = $questionOptionBox.find('.btnQuestionDelete');
+			$btns.prop('disabled', $btns.length <= 1);
+		}
+
+		//선택지 삭제 버튼 상태 (1개면 비활성화)
+		function toggleOptionDeleteDisabled($qnaListQbox) {
+			const $optionItems = $qnaListQbox.find('.optionBox');
+			const disable = $optionItems.length <= 1;
+			$optionItems.find('.btnOptionDelete').prop('disabled', disable);
+		}
+
+		//문항 수 갱신
+		function updateQuestionCount() {
+			const count = $questionOptionBox.find('.questionBox').length;
+			$('.questionCountArea .questionCount').text(count);
+		}
+
+		//초기화 함수
+		function initQuestionUI() {
+			updateQuestionNumbers();
+			toggleQuestionDeleteDisabled();
+			updateQuestionCount();
+
+			$questionOptionBox.find('.questionBox').each(function () {
+				const $qnaListQbox = $(this).find('.qnaListQbox');
+				toggleOptionDeleteDisabled($qnaListQbox);
+			});
+		}
+
+		//DOM 로드 후 초기 실행
+		initQuestionUI();
+		/*문항관련 스크립트 End*/
+	});
+</script>
+</head>
+<body>
+
+
+<!-- wrap -->
+<div id="wrap">
+
+	<!--header-->
+	<div id="header">
+		헤더
+	</div>
+	<!--//header-->
+
+	<!--개발소스에 맞춘-->
+	<div id="historyTab">
+		<!-- 히스토리 탭 -->
+		<ul class="fc-tab">
+			<!--
+				기본탭, Dashboard탭 공통 : 활성화시 li에 selected 추가
+				기본탭 : li 그대로 사용
+				Dashboard탭 : li에 type-ds 클래스 추가
+			-->
+			<li class="selected"><!--selected : 활성화시 추가-->
+				<span class="title">기본 active Tab</span>
+				<span class="fc-tab-right-control">
+					<i class="fas fa-redo-alt" ref="refresh"></i>
+					<i class="fas fa-expand" ref="expand"></i>
+					<i class="fas fa-times" ref="close"></i>
+				</span>
+			</li>
+			<li>
+				<span class="title">Tab Name Tab Name Tab Name</span>
+				<span class="fc-tab-right-control">
+					<i class="fas fa-redo-alt" ref="refresh"></i>
+					<i class="fas fa-expand" ref="expand"></i>
+					<i class="fas fa-times" ref="close"></i>
+				</span>
+			</li>
+			<li>
+				<span class="title">Tab Name</span>
+				<span class="fc-tab-right-control">
+					<i class="fas fa-redo-alt" ref="refresh"></i>
+					<i class="fas fa-expand" ref="expand"></i>
+					<i class="fas fa-times" ref="close"></i>
+				</span>
+			</li>
+		</ul>
+		<!-- 히스토리 탭 -->
+	</div>
+	<!-- //history tab -->
+
+	<!-- contents -->
+	<div id="contents">
+		
+		<div class="content">
+			<div class="cont-lc-area">
+
+				<!-- 상세 컨텐츠 -->
+				<div class="lc-rightbox">
+					<div class="fc-tab-content">
+						<div class="fc-tab-content-item">
+							<!-- 컨텐츠 영역 -->
+
+							<div class="page-head">
+								<h2 class="page-title">평가자 Setting</h2>
+							</div>
+
+							<!-- 페이지 컨텐츠 -->
+							<div class="page-cont">
+
+								<!--cont-search-box-->
+								<div class="cont-search-box type2">
+									<div class="form-box">
+										<div class="dl-col row4 sb50">
+											<dl>
+												<dt style="width: 100px;">
+													<span>평가연도</span>
+												</dt>
+												<dd>
+													<select class="select1">
+														<option>2025년</option>
+													</select>
+												</dd>
+											</dl>
+											<dl>
+												<dt style="width: 100px;">
+													<span>평가시기</span>
+												</dt>
+												<dd>
+													<select class="select1">
+														<option>상반기</option>
+													</select>
+												</dd>
+											</dl>
+										</div>
+									</div>
+									<div class="btn-box">
+										<button type="button" class="btn-search">SEARCH</button>
+										<button type="button" class="btn-refresh">REFRESH</button>
+									</div>
+								</div>
+								<!--//cont-search-box-->
+
+								<!--cont-col-box-->
+								<div class="cont-col-box mgt10">
+									<div class="box-head flex-sb">
+										<div class="sb-l">
+											<h3 class="cont-tit dep1">평가그룹</h3>
+											<div class="tag-group">
+												<select class="select1" style="width: 200px;">
+													<option>3. 관리감독자</option>
+												</select>
+												<a href="#" class="btn-l type1">
+													<i class="ico ico-search2-20-20">검색</i>
+												</a>
+											</div>
+										</div>
+										<div class="sb-r">
+											<div class="cont-btn-box">
+												<a href="#" class="btn-l type1">
+													<i class="ico ico-load-16-16"></i>
+													<span class="txt">불러오기</span>
+												</a>
+												<a href="#" class="btn-l type1">
+													<i class="ico ico-file-16-16"></i>
+													<span class="txt">저장</span>
+												</a>
+											</div>
+										</div>
+									</div>
+									<div class="box-body mgt10">
+										<!--cont-border-box-->
+										<div class="cont-border-box type-style1">
+											<div class="box-head flex-sb type1">
+												<div class="sb-l total-box questionCountArea">
+													<div class="txt-box">
+														<span class="txt">문항수</span>
+														<span class="txt"><em class="cnt questionCount">8</em>개</span>
+													</div>
+													<div class="txt-box">
+														<span class="txt">점수합계</span>
+														<span class="txt"><em class="cnt">24</em>점</span>
+													</div>
+												</div>
+												<div class="sb-r">
+													<button type="button" class="btn-l type3 btn-s btnQuestionAdd">
+														<span class="txt">항목 추가</span>
+													</button>
+												</div>
+											</div>
+											<div class="box-body">
+
+												<!-- 항목, 옵션 템플릿 전체 (복사용) -->
+												<ul class="questionOptionTemplates" style="display: none;">
+													<li class="box item-box questionTemplate questionBox">
+														<div class="box-head flex-sb">
+															<div class="sb-r">
+																<button type="button" class="btn-l type6 btn-s btnQuestionDelete"><span class="txt">항목 삭제</span></button>
+															</div>
+														</div>
+														<div class="box-body">
+															<dl class="qnaList-box type-q">
+																<dt class="questionNo">1.</dt>
+																<dd><input type="text" class="input1"></dd>
+															</dl>
+															<ul class="qnaList-box type-a type-col qnaListQbox">
+																<li class="inbox optionTemplate optionBox">
+																	<div class="formbox type-tit">
+																		<span class="txt">점수</span>
+																		<input type="text" class="input1 form flex1">
+																	</div>
+																	<div class="formbox type-txt">
+																		<span class="txt">내용</span>
+																		<input type="text" class="input1 form flex1">
+																		<button type="button" class="btn-l type6 btn-s btnOptionDelete"><span class="txt">삭제</span></button>
+																	</div>
+																</li>
+															</ul>
+															<div class="qnaList-box type-foot ta-r">
+																<button type="button" class="btn-l type3 btn-s btnOptionAdd"><span class="txt">추가</span></button>
+															</div>
+														</div>
+													</li>
+												</ul>
+												<!-- //항목, 옵션 템플릿 전체 -->
+
+												<!--
+													불러오기시 아래 샘플 참고, 추가삭제는 위 템플릿 복사해서 사용함
+
+													불러오기 한 후 아래 실행 필요
+													initQuestionUI();// 실제 개발후 테스트 필요,
+												-->
+												<ul class="dlList-box row1 jc-r questionOptionBox">
+
+													<!--항목 샘플-->
+													<li class="box item-box questionBox">
+
+														<div class="box-head flex-sb">
+															<div class="sb-r">
+																<button type="button" class="btn-l type6 btn-s btnQuestionDelete"><span class="txt">항목 삭제</span></button>
+															</div>
+														</div>
+														<div class="box-body">
+															<dl class="qnaList-box type-q">
+																<dt class="questionNo">1.</dt>
+																<dd><input type="text" class="input1" /></dd>
+															</dl>
+															<ul class="qnaList-box type-a type-col qnaListQbox">
+
+																<!--옵션 샘플-->
+																<li class="inbox optionBox">
+																	<div class="formbox type-tit">
+																		<span class="txt">점수</span>
+																		<input type="text" class="input1 form flex1" />
+																	</div>
+																	<div class="formbox type-txt">
+																		<span class="txt">내용</span>
+																		<input type="text" class="input1 form flex1" />
+																		<button type="button" class="btn-l type6 btn-s btnOptionDelete"><span class="txt">삭제</span></button>
+																	</div>
+																</li>
+																<!--//옵션 샘플-->
+
+															</ul>
+															<div class="qnaList-box type-foot ta-r">
+																<button type="button" class="btn-l type3 btn-s btnOptionAdd"><span class="txt">추가</span></button>
+															</div>
+														</div>
+													</li>
+													<!--//항목 샘플-->
+
+												</ul>
+
+											</div>
+										</div>
+										<!--//cont-border-box-->
+									</div>
+								</div>
+								<!--//cont-col-box-->
+
+							</div>
+							<!-- //페이지 컨텐츠 -->
+
+							<!-- //컨텐츠 영역 -->
+						</div>
+					</div>
+				</div>
+				<!-- //상세 컨텐츠 -->
+			</div>
+		</div>
+	</div>
+	<!-- //contents -->
+
+	<!-- footer -->	
+	<div id="footer">
+		푸터
+	</div>
+	<!--// footer -->
+
+</div>
+<!--// wrap -->
+
+</body>
+</html>

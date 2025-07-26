@@ -1,0 +1,35 @@
+@charset "utf-8";
+@import url('../../fonts/font.css');
+
+/* CSS Reset */
+body,html,
+header,footer,aside,nav,section,article,details,figure,figcaption,menu,command,
+div,dl,dd,ol,ul,li,form,fieldset,legend,iframe,table,caption,thead,tfoot,tbody,tr,th,td, /* Block Element */
+h1,h2,h3,h4,h5,h6,dt,summary,input,textarea,button,select,datalist,
+img,embed,object,canvas,audio,video,meter,progress,keygen, /* Inline Block Element */
+a,label,output,dialog, /* Inline Element */
+address,blockquote, /* Text Block Element */
+p,pre,/* Text Inline Block Element */
+span,b,strong,i,em,dfn,var,u,ins,s,del,q,mark,small,sub,sup,abbr,bdi,bdo,cite,time,ruby,rp,rt,code,kbd,samp, /* Text Inline Element */
+acronym,big,frame,frameset,noframes,tt, /* Not HTML5 Used Element */
+map,option,hr,*{border:0;padding:0;margin:0;color:inherit;font-family:inherit;font-size:inherit;line-height:inherit;vertical-align: baseline;box-sizing:border-box;}
+header,footer,aside,nav,section,article,details,summary,figure,figcaption,menu,command{display:block} /* HTML5 Block Element */
+/* applet,basefont,center,dir,font,strike{display:none} XHTML4, HTML5 Element Not Used Remove */
+q,blockquote{quotes:none;content:none}
+li,menu{list-style:none;word-break:break-all}
+table{width:100%;border-spacing:0;border-collapse: separate;}
+caption{text-align:left}
+th,td{text-align:center;vertical-align:middle}
+address{font-style:normal}
+label{display:inline-block;}
+a{text-decoration:none;display:inline-block;}
+a:hover, a:active {text-decoration: none;}
+p{margin-block-start: 0; margin-block-end: 0;}
+
+/* Common Setting */
+html{}
+html,body{ width:100%;height:100%;background:#fff; padding: 0; margin: 0;}
+body {color:#333333; font-family: 'arial', 'Malgun Gothic', '맑은 고딕', dotum, '돋움', sans-serif; font-family: 'Noto Sans KR', sans-serif; font-family:'HankookTire', sans-serif; font-weight: normal; font-size:14px; line-height: 20px; letter-spacing: 0; word-spacing: 0;} 
+div{outline:0} /* Script TabIndex Click Focusing Line Remove */
+
+.portlet-content{ padding: 0 !important; margin: 0 !important; border: 0 !important;}

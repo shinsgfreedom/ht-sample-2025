@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- TODO mapper xml 샘플입니다. 해당 프로젝트 환경에 맞게 꼭 변경해서 사용하세요!-->
+<mapper namespace="com.hankooktech.shep.main.favorite.MyFavoriteMapper">
+	<select id="list" resultType="map" parameterType="map">
+		SELECT 1 from DUAL
+	</select>
+	
+	<select id="selectFavoriteList" resultType="map" parameterType="map">
+		/* MyFavoriteMapper.selectFavoriteList */
+		SELECT  
+			MY_FAVORITE_UID
+			, USER_ID
+			, FOLDER_CODE_ID
+			, MENU_ID
+			, FV_URL
+			
+			, DETAIL_ID
+			, CREATE_DATE
+			, TEMP1
+		FROM T_MY_FAVORITE
+	</select>
+	
+	<select id="selectFavoriteDetail" resultType="map" parameterType="map">
+		/* MyFavoriteMapper.selectFavoriteDetail */
+		SELECT  
+			MY_FAVORITE_UID
+			, USER_ID
+			, FOLDER_CODE_ID
+			, MENU_ID
+			, FV_URL
+			
+			, DETAIL_ID
+			, CREATE_DATE
+			, TEMP1
+		FROM T_MY_FAVORITE
+		WHERE MY_FAVORITE_UID = #{MY_FAVORITE_UID}
+	</select>
+	
+	<insert id="insertFavorite" parameterType="map">
+		/* MyFavoriteMapper.insertFavorite */
+		INSERT INTO T_MY_FAVORITE(
+			MY_FAVORITE_UID
+			, USER_ID
+			, FOLDER_CODE_ID
+			, MENU_ID
+			, FV_URL
+			
+			, DETAIL_ID
+			, CREATE_DATE
+			, TEMP1
+		) VALUES (
+			#{uuid}
+			, #{userId}
+			, #{folderCodeId}
+			, #{menuId}
+			, #{fvUrl}
+			
+			, #{detailId}
+			, SYSDATE
+			, #{temp1}
+		)
+	</insert>
+	
+	<update id="updateFavoriteTitle" parameterType="map">
+		/* MyFavoriteMapper.updateFavoriteTitle */
+		UPDATE T_MY_FAVORITE
+		SET TEMP1 = #{TEMP1}
+		WHERE MY_FAVORITE_UID = #{MY_FAVORITE_UID}
+	</update>
+	
+	<delete id="deleteFavorite" parameterType="map">
+		/* MyFavoriteMapper.deleteFavorite */
+		DELETE FROM T_MY_FAVORITE
+		WHERE MY_FAVORITE_UID = #{uuid}
+	</delete>
+	
+	<select id="selectMyBookmarkLatelyList" resultType="map" parameterType="map">
+		/* MyFavoriteMapper.selectMyBookmarkLatelyList */
+		<![CDATA[
+		SELECT
+			F.MY_FAVORITE_UID
+			, F.MENU_ID
+			, F.FV_URL
+			, F.DETAIL_ID
+			, F.TEMP1
+			
+			, M.ID AS MENU_UUID
+			, (SELECT I.CODE FROM FC_I18N I WHERE I.ID = M.I18N_ID) AS I18N_CODE
+		FROM (
+			SELECT
+				MY_FAVORITE_UID
+				, MENU_ID
+				, FV_URL
+				, DETAIL_ID
+				, TEMP1
+				
+				, READ_CNT
+				, ROW_NUMBER() OVER(ORDER BY CREATE_DATE DESC) AS RNUM
+			FROM T_MY_FAVORITE
+			WHERE 1=1
+			AND USER_ID = #{userId}
+			AND FOLDER_CODE_ID = 'CONTENTS'
+		) F
+		
+			JOIN FC_MENU M
+				ON F.MENU_ID = M.MENU_ID
+				
+		WHERE F.RNUM <= #{pageSize}
+		ORDER BY F.RNUM
+		]]>
+	</select>
+	
+	<select id="selectMyBookmarkMostviewList" resultType="map" parameterType="map">
+		/* MyFavoriteMapper.selectMyBookmarkMostviewList */
+		<![CDATA[
+		SELECT
+			F.MY_FAVORITE_UID
+			, F.MENU_ID
+			, F.FV_URL
+			, F.DETAIL_ID
+			, F.TEMP1
+			
+			, M.ID AS MENU_UUID
+			, (SELECT I.CODE FROM FC_I18N I WHERE I.ID = M.I18N_ID) AS I18N_CODE
+		FROM (
+			SELECT
+				MY_FAVORITE_UID
+				, MENU_ID
+				, FV_URL
+				, DETAIL_ID
+				, TEMP1
+				
+				, READ_CNT
+				, ROW_NUMBER() OVER(ORDER BY READ_CNT DESC) AS RNUM
+			FROM T_MY_FAVORITE
+			WHERE 1=1
+			AND USER_ID = #{userId}
+			AND FOLDER_CODE_ID = 'CONTENTS'
+		) F
+		
+			JOIN FC_MENU M
+				ON F.MENU_ID = M.MENU_ID
+				
+		WHERE F.RNUM <= #{pageSize}
+		ORDER BY F.RNUM
+		]]>
+	</select>
+	
+	<select id="selectMyContentsBookmarkStatus" resultType="map" parameterType="map">
+		/* MyFavoriteMapper.selectMyContentsBookmarkStatus */
+		SELECT
+			MY_FAVORITE_UID
+			, TEMP1 AS BOOKMARK_DESC
+		FROM T_MY_FAVORITE
+		WHERE 1=1
+		AND DETAIL_ID = #{detailId}
+		AND USER_ID = #{userId}
+		AND MENU_ID = #{menuId}
+		AND FOLDER_CODE_ID = 'CONTENTS'
+	</select>
+	
+	<update id="updateMyContentsBookmarkReadCnt" parameterType="string" >
+		/* MyFavoriteMapper.updateMyContentsBookmarkReadCnt */
+		UPDATE T_MY_FAVORITE
+		SET READ_CNT = NVL(READ_CNT, 1) + 1
+			, UPDATE_DATE = SYSDATE
+		WHERE MY_FAVORITE_UID = #{myFavoriteUid}
+	</update>
+	
+	<insert id="insertMyContentsBookmark" parameterType="map">
+		/* MyFavoriteMapper.insertMyContentsBookmark */
+		MERGE INTO T_MY_FAVORITE T
+		USING
+		(
+			SELECT
+				#{uuid} AS MY_FAVORITE_UID
+				, #{userId} AS USER_ID
+				, 'CONTENTS' AS FOLDER_CODE_ID
+				, #{menuId} AS MENU_ID
+				, #{fvUrl} AS FV_URL
+				
+				, #{detailId} AS DETAIL_ID
+				, SYSDATE AS CREATE_DATE
+				, #{bookmarkDesc} AS TEMP1
+				, 1 AS READ_CNT
+			FROM DUAL
+		) S
+		ON (
+			1=1
+			AND T.DETAIL_ID = S.DETAIL_ID
+			AND T.USER_ID = S.USER_ID
+			AND T.MENU_ID = S.MENU_ID
+			AND T.FOLDER_CODE_ID = S.FOLDER_CODE_ID
+		)
+		WHEN NOT MATCHED THEN
+		INSERT(
+			MY_FAVORITE_UID, USER_ID, FOLDER_CODE_ID, MENU_ID, FV_URL
+			, DETAIL_ID, CREATE_DATE, TEMP1, READ_CNT
+		)
+		VALUES(
+			S.MY_FAVORITE_UID, S.USER_ID, S.FOLDER_CODE_ID, S.MENU_ID, S.FV_URL
+			, S.DETAIL_ID, S.CREATE_DATE, S.TEMP1, S.READ_CNT
+		)
+	</insert>
+
+	
+</mapper>

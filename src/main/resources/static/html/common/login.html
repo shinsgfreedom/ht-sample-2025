@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>SHE Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 화면용 css : 공통에서 제공중이니 개발시 삭제 -->
+<link rel="stylesheet" href="../../core/core-admin.css" type="text/css">
+
+<!-- front 기본 css -->
+<link rel="stylesheet" href="../../common_f/css/style.css" type="text/css">
+<link rel="stylesheet" href="../../front/css/front.css" type="text/css">
+
+
+<!-- 화면용 jquery 버전 : 공통에서 제공중이니 개발시 삭제 -->
+<script type="text/javascript" src="../../common_f/js/jquery-3.5.1.min.js"></script>
+
+<!-- 기본 js -->
+<script type="text/javascript" src="../../common_f/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../common_f/js/common-ui.js"></script>
+<script type="text/javascript" src="../../front/js/front-ui.js"></script>
+
+<script type="text/javascript">
+	$(function(){
+		$('html').addClass('loginHtml');
+	});
+</script>
+</head>
+
+<body>
+<!-- wrap -->
+<div id="wrap-login">
+	<div class="login-inner">
+
+	<!-- container -->
+	<div class="header">		
+		<span class="logo">
+			<img src="../../common_f/images/login/login-top-logo.png" alt="Hankook" />
+			<img src="../../common_f/images/login/logo.png" alt="SHE" />
+		</span>
+	</div>
+	<div id="container">
+		<div class="inner-contain">
+			<div class="visual">
+				<img src="../../common_f/images/login/edge-left.png" class="left"/>
+				<img src="../../common_f/images/login/edge-right.png" class="right" />
+				<div class="bg-area">
+					<!-- 배경 이미지 영역 -->
+				</div>
+			</div>
+			<div class="login-wrap">
+				<div class="info-bx">
+
+					<div class="textbox mgb20">
+						<p class="txt1">Welcome to</p>
+						<p class="txt2">
+							<strong>SHE</strong>
+							<span>System</span>
+						</p>
+					</div>
+					
+					<input type="text" class="input" placeholder="User ID"/>
+
+					<input type="password" class="input" placeholder="Password"/>
+
+					<div class="chkFindbox flrbox">
+						<div class="chk-box fl">
+							<span class="check">
+								<input type="checkbox" id="rememberID" name="rememberID">
+								<label for="rememberID">Remember ID</label>
+							</span>
+						</div>
+					</div>
+					<button type="button" class="btn-login" title="login">LOGIN</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--// container -->
+
+	<div class="footer">
+		<p class="copyright">Copyright © Hankook Tire &amp; Technology Co.,Ltd. All Rights Reserved.</p>
+	</div>
+
+	</div>
+</div>
+<!--// wrap -->
+</body>
+</html>

@@ -1,0 +1,114 @@
+.fc-tab {
+    display: flex;
+    position: relative;
+    padding: 2em 0.5em 0 0.5em;
+    background: #ddd;
+}
+
+.fc-tab > li {
+    min-width: 140px;
+    width: 140px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    white-space: nowrap;
+    cursor: pointer;
+    align-items: center;
+    box-sizing: border-box;
+    border: 2px dotted transparent;
+    margin-right: 8px;
+}
+
+.fc-tab > li .fc-tab-left-control {
+    padding: 0 4px 0 2px;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+}
+
+.fc-tab > li .fc-tab-left-control i {
+    margin-right: 2px;
+}
+
+.fc-tab > li .fc-tab-left-control i:last-child {
+    margin-right: 0;
+}
+
+.fc-tab > li .fc-tab-right-control {
+    padding-right: 4px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+}
+.fc-tab > li .fc-tab-right-control i {
+    margin-right: 2px;
+}
+.fc-tab > li .fc-tab-right-control i:last-child {
+    margin-right: 0;
+}
+
+.fc-tab > li.selected {
+    color: #fff;
+}
+
+.fc-tab > li > i {
+    color: #606060;
+    margin: 0.2em;
+    cursor: pointer;
+}
+
+.fc-tab > li > span.title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    letter-spacing: -0.01em;
+    word-spacing: -0.06em;
+}
+
+.fc-tab > li:hover {
+    background: #999;
+    color: #fff;
+    font-weight: 500;
+}
+
+.fc-tab > li i[ref=drag-bar],
+.fc-tab > li i[ref=expand],
+.fc-tab > li i[ref=refresh],
+.fc-tab > li i[ref=close] {
+    display: none;
+}
+
+.fc-tab > li:hover i[ref=drag-bar],
+.fc-tab > li:hover i[ref=expand],
+.fc-tab > li:hover i[ref=refresh],
+.fc-tab > li:hover i[ref=close] {
+    display: inherit;
+}
+
+.fc-tab > li:hover i {
+    color: #fff;
+}
+
+.fc-tab > li:last-child {
+    margin-right: 0;
+}
+
+
+.fc-tab > li.moving {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+    user-select: none;
+    color: #606060;
+    background: #fff;
+    z-index: 1;
+    border: 2px dotted #606060;
+    font-size: 12px;
+    padding: 0 4px 0 4px;
+}
+.fc-tab > li i.fa-thumbtack[ref=pin]:not(.fa-rotate-180) {
+    color: #F1C2C6;
+}

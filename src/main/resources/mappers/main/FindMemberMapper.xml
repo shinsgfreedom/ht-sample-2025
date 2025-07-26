@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- TODO mapper xml 샘플입니다. 해당 프로젝트 환경에 맞게 꼭 변경해서 사용하세요!-->
+<mapper namespace="com.hankooktech.shep.main.member.FindMemberMapper">
+	<select id="list" resultType="map" parameterType="map">
+		SELECT 1 from DUAL
+	</select>
+	
+	<!--
+		FindMemberMapper - findMemberList
+			init L: 검색이 아닐 경우 본인과 동일 팀 목록만 표출한다
+			searchWord	이름 검색
+			searchWord1	EMPLOYEE_NO 검색
+			searchWord2	부서 코드 검색
+	 -->
+	<select id="findMemberList" resultType="map" parameterType="map">
+		/* FindMemberMapper.findMemberList */
+		SELECT HANKOOKTIRE.*
+		FROM (	
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY NAME ASC) AS RASC 
+				, ROW_NUMBER() OVER(ORDER BY NAME DESC) AS RDESC
+				, HANKOOKTIRE_SUB.* 
+			FROM
+			(
+				SELECT 
+					COUNT(*) OVER() AS totalCount
+					, UR.USER_ID
+					, UR.EMPLOYEE_NO
+					, UR.EMAIL
+					, UR.USER_DVSN
+						
+					, UR.UUID	
+					, EM.NAME
+					, EM.NAME_EN
+					, EM.COMPANY_CODE
+					, EM.DEPT_CODE
+						
+					, EM.DEPT_NAME
+					, ORG.DEPT_NAME_EN
+					, EM.RANK_CODE
+					, EM.RANK_NAME
+					, EM.RANK_NAME_EN
+					
+					, EM.RANK_NAME_NATIVE
+					, EM.POSITION_CODE
+					, EM.POSITION_NAME
+					, EM.POSITION_NAME_EN
+					, EM.POSITION_NAME_NATIVE
+					
+					, EM.ESTABLISHMENT_NAME
+					, EM.USE_LANG
+					, EM.WORK_COUNTRY_CODE
+					, EM.HOLD_OFFICE_DIVISION
+					, EM.EMPLOYEE_DIVISION
+					
+					, CASE WHEN FAVO.DETAIL_ID IS NOT NULL THEN 'Y' ELSE 'N' END AS  FAVORITE_YN
+					, ORG.DEPT_CODE_PATH
+					, F_PLMS_GET_DEPT_PATH_NAME('EN', ORG.DEPT_CODE_PATH) AS DEPT_NAME_PATH
+					, NVL(FAVO.DETAIL_ID, UR.UUID) AS DETAIL_ID
+				
+				FROM 	FC_USERS UR
+					
+					JOIN FC_EMPLOYEE EM
+						ON UR.EMPLOYEE_NO = EM.EMPLOYEE_NO
+						
+					JOIN FC_ORGANIZATION ORG
+						ON EM.DEPT_CODE = ORG.DEPT_CODE
+						
+					LEFT JOIN (
+						SELECT	DISTINCT DETAIL_ID , USER_ID FROM T_MY_FAVORITE
+						WHERE USER_ID = #{userId}
+						AND FOLDER_CODE_ID = 'MEMBER'
+					) FAVO
+						ON UR.UUID = FAVO.DETAIL_ID
+				
+				WHERE	1=1
+				<if test="searchWord == null and searchWord2 == null and searchWord3 == null">
+					AND EM.DEPT_CODE = (
+						SELECT EE.DEPT_CODE 
+						FROM FC_USERS UU 
+						
+							JOIN FC_EMPLOYEE EE
+								ON UU.EMPLOYEE_NO = EE.EMPLOYEE_NO
+							
+						WHERE UU.UUID = #{userId}
+					)
+				</if>
+				<if test="searchWord != null and searchWord != ''">
+					AND ( upper(EM.NAME_EN) LIKE '%' || upper(#{searchWord})  || '%'
+						OR upper(EM.NAME) LIKE '%' || upper(#{searchWord}) || '%' )
+				</if>
+				<if test="searchWord2 != null and searchWord2 != ''">
+					AND UR.EMPLOYEE_NO = #{searchWord2}
+				</if>
+				<if test="searchWord3 != null and searchWord3 != ''">
+					AND EM.DEPT_CODE = #{searchWord3}
+				</if>
+			) HANKOOKTIRE_SUB
+		) HANKOOKTIRE
+		WHERE RASC BETWEEN ((${ pageNo } - 1) * ${ pageSize }) + 1 AND (${ pageNo } * ${ pageSize }) 
+	</select>
+	
+	<select id="findMemberDetail" resultType="map" parameterType="map">
+		/* FindMemberMapper.findMemberDetail */
+		SELECT
+			UR.UUID
+			, UR.USER_ID
+			, UR.EMPLOYEE_NO
+			, UR.EMAIL
+			, UR.USER_DVSN	
+			
+			, EM.NAME
+			, EM.NAME_EN
+			, EM.COMPANY_CODE
+			, EM.DEPT_CODE	
+			, EM.DEPT_NAME
+			, ORG.DEPT_NAME_EN
+			
+			, EM.RANK_CODE
+			, EM.RANK_NAME
+			, EM.RANK_NAME_EN
+			, EM.RANK_NAME_NATIVE
+			, EM.POSITION_CODE
+			
+			, EM.POSITION_NAME
+			, EM.POSITION_NAME_EN
+			, EM.POSITION_NAME_NATIVE
+			, EM.ESTABLISHMENT_NAME
+			, EM.USE_LANG
+			
+			, EM.WORK_COUNTRY_CODE
+			, EM.HOLD_OFFICE_DIVISION
+			, EM.EMPLOYEE_DIVISION
+			
+			, ORG.DEPT_CODE_PATH
+			, F_PLMS_GET_DEPT_PATH_NAME('EN', ORG.DEPT_CODE_PATH) AS DEPT_NAME_PATH
+			, nvl2(FAVO.DETAIL_ID, 'Y', 'N') AS FAVORITE_YN
+			, NVL(FAVO.DETAIL_ID, UR.UUID) AS DETAIL_ID
+		
+		FROM 	FC_USERS UR
+			
+			JOIN FC_EMPLOYEE EM
+				ON UR.EMPLOYEE_NO = EM.EMPLOYEE_NO
+				
+			JOIN FC_ORGANIZATION ORG
+				ON EM.DEPT_CODE = ORG.DEPT_CODE
+				
+			LEFT JOIN (
+				SELECT	DISTINCT DETAIL_ID , USER_ID FROM T_MY_FAVORITE
+				WHERE DETAIL_ID = #{uuid}
+				AND USER_ID = #{userId}
+				AND FOLDER_CODE_ID = 'MEMBER'
+			) FAVO
+				ON UR.UUID = FAVO.DETAIL_ID
+		
+		WHERE	1=1
+		AND UR.UUID = #{uuid}
+	</select>
+	
+	<select id="getOrganizationTree" resultType="map" parameterType="map">
+		/* FindMemberMapper.getOrganizationTree */
+		SELECT  
+			LEVEL 
+			, LPAD(' ',2*(LEVEL-1)) || DEPT_NAME_EN DEPT_NAME_LEVEL
+			, DEPT_NAME_EN
+			, DEPT_NAME
+			, UPPER_DEPT_CODE
+			 
+			, DEPT_CODE
+		FROM FC_ORGANIZATION
+		START WITH UPPER_DEPT_CODE = '00000000'
+		CONNECT BY PRIOR DEPT_CODE = UPPER_DEPT_CODE
+	</select>
+	
+	<select id="findOrganization" resultType="map" parameterType="map">
+		/* FindMemberMapper.findOrganization */
+		SELECT 
+			DEPT_NAME_EN
+			, DEPT_NAME
+			, UPPER_DEPT_CODE
+			, DEPT_CODE
+			, WORK_COUNTRY_CODE
+			
+			, DEPT_NAME_NATIVE
+			, #{cttnCode} AS CTTN_CODE
+		FROM FC_ORGANIZATION
+		WHERE UPPER(DEPT_NAME) LIKE '%' || UPPER(#{searchWord}) || '%'
+			OR UPPER(DEPT_NAME_EN) LIKE '%' || UPPER(#{searchWord}) || '%'
+	</select>
+	
+	<select id="getFavoriteMemberList" resultType="map" parameterType="map">
+		/* FindMemberMapper.getFavoriteMemberList */
+		SELECT HANKOOKTIRE.*
+		FROM (	
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY NAME ASC) AS RASC 
+				, ROW_NUMBER() OVER(ORDER BY NAME DESC) AS RDESC
+				, HANKOOKTIRE_SUB.* 
+			FROM
+			(
+				SELECT
+					COUNT(*) OVER() AS totalCount
+					, UR.USER_ID
+					, UR.EMPLOYEE_NO
+					, UR.EMAIL
+					, UR.USER_DVSN	
+					
+					, EM.NAME
+					, EM.NAME_EN
+					, EM.COMPANY_CODE
+					, EM.DEPT_CODE	
+					, EM.DEPT_NAME
+					
+					, ORG.DEPT_NAME_EN
+					, EM.RANK_CODE
+					, EM.RANK_NAME
+					, EM.RANK_NAME_EN
+					, EM.RANK_NAME_NATIVE
+					
+					, EM.POSITION_CODE
+					, EM.POSITION_NAME
+					, EM.POSITION_NAME_EN
+					, EM.POSITION_NAME_NATIVE
+					, EM.ESTABLISHMENT_NAME
+					
+					, EM.USE_LANG
+					, EM.WORK_COUNTRY_CODE
+					, EM.HOLD_OFFICE_DIVISION
+					, EM.EMPLOYEE_DIVISION
+					, 'Y' AS  FAVORITE_YN
+					
+					, ORG.DEPT_CODE_PATH
+					, F_PLMS_GET_DEPT_PATH_NAME('EN', ORG.DEPT_CODE_PATH) AS DEPT_NAME_PATH
+					, FAVO.MY_FAVORITE_UID AS UUID
+					, NVL(FAVO.DETAIL_ID, UR.UUID) AS DETAIL_ID
+					
+				FROM 	FC_USERS UR
+					
+					JOIN FC_EMPLOYEE EM
+						ON UR.EMPLOYEE_NO = EM.EMPLOYEE_NO
+						
+					JOIN FC_ORGANIZATION ORG
+						ON EM.DEPT_CODE = ORG.DEPT_CODE
+						
+					JOIN (
+						SELECT	DISTINCT MY_FAVORITE_UID , DETAIL_ID , USER_ID FROM T_MY_FAVORITE
+						WHERE USER_ID = #{userId}
+						AND FOLDER_CODE_ID = 'MEMBER'
+					) FAVO
+						ON UR.UUID = FAVO.DETAIL_ID
+				
+				WHERE	1=1
+				<if test="searchWord != null and searchWord != ''">
+					AND ( upper(EM.NAME_EN) LIKE '%' || upper(#{searchWord})  || '%'
+					OR upper(EM.NAME) LIKE '%' || upper(#{searchWord}) || '%' )
+				</if>
+				<!-- 즐겨찾기에서 유저 아이디로 멤버 찾기 -->
+				<if test="searchWord4 != null and searchWord4 != ''">        
+					AND UR.USER_ID = #{searchWord4}
+				</if>
+			) HANKOOKTIRE_SUB
+		) HANKOOKTIRE
+		WHERE RASC BETWEEN ((${ pageNo } - 1) * ${ pageSize }) + 1 AND (${ pageNo } * ${ pageSize }) 
+	</select>
+	
+	<delete id="deleteFavorite" parameterType="map">
+		/* FindMemberMapper.deleteFavorite */
+		DELETE FROM T_MY_FAVORITE 
+		WHERE USER_ID = #{userId}
+		AND DETAIL_ID = #{detailId}
+		AND FOLDER_CODE_ID = 'MEMBER'
+	</delete>
+	
+	<update id="mergeRecentlyViewed" parameterType="map" >
+		/* FindMemberMapper.mergeRecentlyViewed */
+		MERGE INTO T_RECENTLY_VIEWED_MEMBERS 
+		USING DUAL
+			ON (USER_ID = #{userId} AND TARGET_ID = #{targetId})
+		WHEN MATCHED THEN
+			UPDATE SET
+			DEL_YN = 'N'
+			,UPDATE_DATE = SYSDATE
+		WHEN NOT MATCHED THEN
+			INSERT (RECENTLY_VIEWED_MEMBERS_UID, TARGET_ID, USER_ID, DEL_YN, CREATE_DATE, UPDATE_DATE)
+			VALUES	(#{uuid}, #{targetId}, #{userId}, 'N', SYSDATE, SYSDATE)
+	</update>
+	
+	<select id="findRecentlyViewedList" resultType="map" parameterType="map">
+		/* FindMemberMapper.findRecentlyViewedList */
+		SELECT
+			UR.USER_ID
+			, UR.EMPLOYEE_NO
+			, UR.EMAIL
+			, UR.USER_DVSN
+			, UR.UUID
+			
+			, EM.NAME
+			, EM.NAME_EN
+			, EM.COMPANY_CODE
+			, EM.DEPT_CODE
+			, EM.DEPT_NAME
+			
+			, ORG.DEPT_NAME_EN
+			, EM.RANK_CODE
+			, EM.RANK_NAME
+			, EM.RANK_NAME_EN
+			, EM.RANK_NAME_NATIVE
+			
+			, EM.POSITION_CODE
+			, EM.POSITION_NAME
+			, EM.POSITION_NAME_EN
+			, EM.POSITION_NAME_NATIVE
+			, EM.ESTABLISHMENT_NAME
+			
+			, EM.USE_LANG
+			, EM.WORK_COUNTRY_CODE
+			, EM.HOLD_OFFICE_DIVISION
+			, EM.EMPLOYEE_DIVISION
+			, CASE WHEN FAVO.DETAIL_ID IS NOT NULL THEN 'Y' ELSE 'N' END AS  FAVORITE_YN
+			
+			, ORG.DEPT_CODE_PATH
+			, F_PLMS_GET_DEPT_PATH_NAME('EN', ORG.DEPT_CODE_PATH) AS DEPT_NAME_PATH
+			
+		FROM 	FC_USERS UR
+			
+			JOIN FC_EMPLOYEE EM
+				ON UR.EMPLOYEE_NO = EM.EMPLOYEE_NO
+				
+			JOIN FC_ORGANIZATION ORG
+				ON EM.DEPT_CODE = ORG.DEPT_CODE
+				
+			JOIN T_RECENTLY_VIEWED_MEMBERS SRVM
+				ON UR.UUID = SRVM.TARGET_ID
+				AND SRVM.USER_ID = #{userId}
+				AND SRVM.DEL_YN = 'N'
+				
+			LEFT JOIN (
+				SELECT	DISTINCT DETAIL_ID , USER_ID FROM T_MY_FAVORITE
+				WHERE USER_ID = #{userId}
+				AND FOLDER_CODE_ID = 'MEMBER'
+			) FAVO
+				ON UR.UUID = FAVO.DETAIL_ID
+			
+		WHERE	1=1
+	</select>
+	
+	<update id="deleteRecentlyViewed" parameterType="map" >
+		/* FindMemberMapper.deleteRecentlyViewed */
+		UPDATE T_RECENTLY_VIEWED_MEMBERS
+		SET DEL_YN  = 'Y'
+		, UPDATE_DATE = SYSDATE
+		WHERE USER_ID = #{userId}
+		<if test="targetId != null and targetId != ''">
+		AND TARGET_ID = #{targetId}
+		</if>
+	</update>
+	
+	<update id="deleteAllRecentlyViewed" parameterType="string" >
+		/* FindMemberMapper.deleteAllRecentlyViewed */
+		UPDATE T_RECENTLY_VIEWED_MEMBERS
+		SET DEL_YN  = 'Y'
+		, UPDATE_DATE = SYSDATE
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<select id="getUsers" resultType="map" parameterType="string">
+		/* FindMemberMapper.getUsers */
+		SELECT 
+			U.UUID,
+			U.EMPLOYEE_NO EMP_NO,
+			U.USER_ID,
+			U.NAME,
+			O.DEPT_CODE,
+			
+			O.DEPT_NAME
+		FROM FC_USERS U
+		
+			INNER JOIN FC_EMPLOYEE E
+				ON U.USE_YN = 'Y'
+				AND U.EMPLOYEE_NO = E.EMPLOYEE_NO
+			
+		INNER JOIN FC_ORGANIZATION O
+			ON O.USE_YN = 'Y' 
+			AND E.DEPT_CODE = #{deptCode}
+			AND E.DEPT_CODE = O.DEPT_CODE
+	</select>
+	
+</mapper>

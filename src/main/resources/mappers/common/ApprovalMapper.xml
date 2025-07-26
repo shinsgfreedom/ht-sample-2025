@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hankooktech.shep.common.approval.ApprovalMapper">
+	
+	<select id="selectApprovalInfo"
+        parameterType="com.hankooktech.shep.common.approval.ApprovalDTO$Request$Search"
+        resultType="com.hankooktech.shep.common.approval.ApprovalDTO$Response$ApprovalInfo">
+        /* ApprovalMapper.selectApprovalInfo */
+        SELECT * 
+        FROM (
+	        SELECT
+	            M.APPROVAL_MAS_UID
+	            , M.APPROVAL_DOCUMENT_UID
+	            , M.APPROVAL_DOCUMENT_NO
+	            , M.APPROVAL_TYPE_CODE
+	            , M.APPROVAL_STATUS_CODE
+	            
+	            , M.APPROVAL_TITLE
+	            , A.APPROVAL_ARENA_UID
+	            , A.ARENA_DOCUMENT_ID
+	            , A.ARENA_PATH
+	            , A.ARENA_STATUS_MESSAGE
+	            
+	            , ROW_NUMBER() OVER (PARTITION BY APPROVAL_DOCUMENT_UID, APPROVAL_TYPE_CODE ORDER BY a.CREATE_DATE desc ) AS RN
+	        FROM T_APPROVAL_MAS M
+	        
+	            LEFT OUTER JOIN T_APPROVAL_ARENA A
+	                ON 1=1
+	                AND A.APPROVAL_MAS_UID = M.APPROVAL_MAS_UID
+	                
+	        WHERE 1=1
+	        <choose>
+	            <when test='approvalDocumentUid != null and approvalDocumentUid neq "" and approvalTypeCode != null and approvalTypeCode neq ""'>
+	                AND M.APPROVAL_DOCUMENT_UID = #{approvalDocumentUid}
+	                AND M.APPROVAL_TYPE_CODE = #{approvalTypeCode}
+	            </when>
+	            
+	            <when test='approvalDocumentNo != null and approvalDocumentNo neq ""'>
+	                AND M.APPROVAL_DOCUMENT_NO = #{approvalDocumentNo}
+	            </when>
+	            
+	            <otherwise>
+	                AND 1=2
+	            </otherwise>
+	        </choose>
+	    )
+	    WHERE 1=1
+	    AND RN = 1
+    </select>
+	
+
+	<insert id="saveApprovalMas" parameterType="com.hankooktech.shep.common.approval.ApprovalDTO$Request$Save">
+		/* ApprovalMapper.saveApprovalMas */
+		MERGE INTO T_APPROVAL_MAS T
+		USING DUAL
+            ON (1=1
+                AND APPROVAL_DOCUMENT_UID = #{approvalDocumentUid}
+                AND APPROVAL_TYPE_CODE = #{approvalTypeCode}
+                AND APPROVAL_STATUS_CODE = 'DUMMY'
+            )
+        WHEN MATCHED THEN
+            UPDATE SET
+                APPROVAL_MAS_UID = #{approvalMasUid}
+                , APPROVAL_DOCUMENT_NO = #{approvalDocumentNo}
+                , APPROVAL_TITLE = #{approvalTitle}
+                , APPROVAL_CONTENTS = #{approvalContents}
+                , APPROVAL_DATE = SYSDATE
+                
+                , APPROVAL_USER_UID = #{approvalUserUid}
+        
+        WHEN NOT MATCHED THEN
+			INSERT (
+				APPROVAL_MAS_UID
+				, APPROVAL_DOCUMENT_UID
+				, APPROVAL_DOCUMENT_NO
+				, APPROVAL_TYPE_CODE
+				, APPROVAL_STATUS_CODE
+				
+				, APPROVAL_TITLE
+				, APPROVAL_CONTENTS
+				, APPROVAL_DATE
+				, APPROVAL_USER_UID
+			) VALUES (
+				#{approvalMasUid}
+				, #{approvalDocumentUid}
+				, #{approvalDocumentNo}
+				, #{approvalTypeCode}
+				, #{approvalStatusCode} 
+				
+				, #{approvalTitle}
+				, #{approvalContents}
+				, SYSDATE
+				, #{approvalUserUid}
+			)
+	</insert>
+</mapper>

@@ -1,0 +1,83 @@
+
+.fc-dashboard-container {
+    position: relative;
+    background: #f4f4f4;
+    transition: width 0.15s ease, height 0.15s ease;
+}
+.fc-portlet-group {
+    width: 376px;
+    height: 12em;
+    box-sizing: border-box;
+    border: 1px solid #dce1e6;
+    background: #fff;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+.fc-portlet-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    line-height: 56px;
+    color: rgba(28, 43, 52, 0.98);
+    padding: 0 4px;
+    position: relative;
+    transition: all 0.15s ease;
+}
+
+.fc-portlet-group-header > input.input1 {
+    height: 24px;
+    line-height: 24px;
+    padding: 5px 10px;
+    border-color: #d3d3d3;
+}
+.fc-portlet-group-header > h2 {
+    cursor: pointer;
+    align-items: start;
+    color: rgba(28, 43, 52, 0.68);
+}
+.fc-portlet-group-body {
+    flex: 1;
+    background: #fbfbfb;
+}
+
+.fc-portlet-toolbar > button {
+    padding: 4px 0;
+    font-size: 14px;
+    color: rgba(28, 43, 52, 0.68);
+}
+.fc-portlet-toolbar > button:hover {
+    color: rgba(28, 43, 52, 0.98);
+}
+
+.fc-portlet-item {
+    width: 4em;
+    height: 4em;
+    box-sizing: border-box;
+    border: 1px solid #dce1e6;
+    background: #fff;
+    position: absolute;
+}
+.fc-portlet-item-body {
+    padding-top: 22px;
+    overflow: auto;
+}
+
+.moving, .resizing {
+    transition: width 0.15s ease, height 0.15s ease, transform 0.15s ease;
+}
+.fc-portlet-item.moving iframe, .fc-portlet-item.placeholder.resizing {
+    pointer-events: none;
+}
+
+.fc-portlet-item.placeholder {
+    opacity: 0.8;
+    border: 2px dashed #90d5ff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 8px 8px -3px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+
+    transition: width 0.15s ease, height 0.15s ease, transform 0.15s ease;
+}
+.fc-portlet-item-header [ref=switch-select].fa-check-circle {
+    color: #e94a4a;
+}

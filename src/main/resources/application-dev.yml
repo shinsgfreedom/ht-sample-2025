@@ -1,0 +1,65 @@
+spring:
+  datasource:
+    url: jdbc:log4jdbc:oracle:thin:@//202.31.8.76:1521/DHKDORA2
+    username: SHEUSER
+    password: She_pw12#
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+  servlet:
+    multipart:
+      max-file-size: 10000MB
+      max-request-size: 10000MB
+      location: /TOMCAT/upload/multipart/
+  data:
+    web:
+      pageable:
+        max-page-size: 20000
+fc-config:
+  o365-config:
+    server-url: http://202.31.8.55:8080/o365/
+    server-id: ddd
+    secret-key: f5d70d34808d
+    timeout-seconds: 10
+  snapshot-my-url: http://202.31.8.108 # "스냅샷 서버 -> 현재 서버"에 요청하기 위한 url origin, 사용하지않는경우에는 생략 가능 ex) http://10.8.8.8:8080
+  base-protocol: https:// 
+  base-url: //devplms.hankooktire.com
+  file-config:
+    file-root-path: /TOMCAT/upload # 파일 업로드 디렉토리
+    clear-garbage-files: true
+  sso:
+    ssid: 268   # sso 서버 발급 아이디
+    success-redirect-url: /MAIN/main.html   # sso 성공 후 이동할 첫 페이지
+    my-domain: devshep.hankooktech.com   # referer 체크를 위한 자신의 도메인(보안 체크시 사용)
+    arena-http-domain: http://arena.hankooktech.com   # 결제열람용 도메인
+    arena-https-domain: https://arena.hankooktech.com   # 결제상신용 도메인
+  notice-config:
+    server-name: ddd_dev
+    server-key: 818315c8-d713-4b2c-898c-e189c0d70281
+    server-url: http://ws.cosmo.hankooktech.com:8095
+  approval-config:
+    system-id: DDD-DEV
+    system-key: CB08B74B-B90A-4E51-99B0-D4C46AA6219D
+    cosmo-url: https://cosmo-idpdev.hankooktech.com
+    mail-send-enabled: false
+    notice-send-enabled: false
+    test-mail-to: em220913@hankooktech.com
+    test-notice-to: c00cfe9f807d6d9a4ba994c862082275
+    my-appr-menu-key : MY_APPR_REOP
+    my-appr-menu-link : https://devshep.hankooktire.com/MY_APPR_REOP/index.html
+    sso-active : false
+    use-time: UTC
+search:
+  url: http://202.31.8.55:8080/api/shep/
+server:
+  error:
+    include-exception: true
+    include-stacktrace: always
+    path: /error
+    whitelabel.enabled: false
+batch:
+  jenkins:
+    auth: em180401:11b318e29bb1d9d527a7780211b4b79bd6
+unity-log:
+  system-id: DDD_DEV
+  system-key: DDD_DEV
+  ssl-url: https://glas.hankooktech.com:8443
+ 

@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hankooktech.shep.main.portlet.MainPortletMapper">
+	<select id="selectRecentVisit" parameterType="map" resultType="map">
+		/* MainPortletMapper.selectRecentVisit */
+		<![CDATA[ 	
+		SELECT
+			TO_CHAR(A.ACCESS_DATE, 'YYYY-MM-DD') AS ACCESS_DATE
+			, A.MENU_ID
+			, A.MENU_NAME
+			, A.USER_ID
+			, A.USER_NAME
+			
+			, (
+				SELECT I.CODE FROM FC_MENU M 
+					JOIN FC_I18N I 
+						ON M.I18N_ID = I.ID 
+				WHERE M.ID = A.MENU_ID
+			) AS I18N_CODE
+			, TO_CHAR(A.ACCESS_DATE, 'YYYY-MM-DD HH24:MI') AS ACCESS_DT
+			, TO_CHAR(COUNT(*) OVER()) AS TOTAL_CNT
+		FROM (
+			SELECT
+				MAX(ACCESS_DATE) AS ACCESS_DATE
+				, MENU_ID
+				, MENU_NAME
+				, USER_ID
+				, USER_NAME
+			FROM FC_MENU_ACCESS_LOG
+			WHERE 1=1
+			AND ACCESS_DATE > SYSDATE - 30
+			AND USER_ID = #{search.userId}
+			AND MENU_NAME NOT IN ('MAIN')
+			GROUP BY MENU_ID, MENU_NAME, USER_ID, USER_NAME
+			ORDER BY ACCESS_DATE DESC
+		) A
+		OFFSET #{page.offset} ROWS FETCH FIRST #{page.size} ROWS ONLY
+		]]>
+	</select>
+	
+	<select id="selectTodoList" parameterType="map" resultType="map">
+		/* MainPortletMapper.selectTodoList */
+		<![CDATA[ 	
+		SELECT
+			TO_CHAR(A.REQUEST_DATE, 'YYYY-MM-DD') AS REQUEST_DATE
+			, A.DOC_NO
+			, A.DESCRIPTION
+			, A.STATUS
+			, A.CREATE_USER_ID
+			
+			, A.MENU_ID
+			, A.REQ_ID
+			, (SELECT U.NAME FROM FC_USERS U WHERE U.UUID = A.CREATE_USER_ID OR U.USER_ID = A.CREATE_USER_ID ) AS USER_NAME
+			, (
+				SELECT I.CODE FROM FC_MENU M 
+					JOIN FC_I18N I 
+						ON M.I18N_ID = I.ID 
+				WHERE M.MENU_ID = A.MENU_ID
+			) AS I18N_CODE
+			, TO_CHAR(A.REQUEST_DATE, 'YYYY-MM-DD HH24:MI') AS REQUEST_DT
+			
+			, A.DESCRIPTION_FULL
+			, TO_CHAR(COUNT(*) OVER()) AS TOTAL_CNT
+		FROM (
+			SELECT
+				DOC_NO
+				, DESCRIPTION
+				, NVL(F_GET_CODEVALUE(STATUS, 'CODE_NAME'), STATUS) AS STATUS
+				, CREATE_USER_ID
+				, NVL(UPDATE_DATE, CREATE_DATE) AS REQUEST_DATE
+				
+				, 'M_CODE_RECEIPT' AS MENU_ID
+				, MCODE_REQUEST_UID AS REQ_ID
+				, NVL(F_GET_CODEVALUE(CUSTOMER_CODE, 'CODE_NAME'), CUSTOMER_CODE) || NVL2(CUSTOMER_CODE, ') ', '') || DESCRIPTION AS DESCRIPTION_FULL
+			FROM T_MCODE_REQUEST
+			WHERE 1=1
+			AND STATUS IN ('BIZ_STT_MCODE_RQ_REQUEST', 'SEND')
+			AND (DOC_NO, CREATE_DATE) IN (
+				SELECT 
+					DOC_NO
+					, MAX(CREATE_DATE)
+				FROM T_MCODE_REQUEST
+				WHERE DEL_YN = 'N'
+				GROUP BY DOC_NO
+			)
+			AND 1 = (
+				CASE WHEN #{search.userId} IN ('em180401', 'admin') THEN 1
+				ELSE
+					CASE WHEN 
+						CUSTOMER_CODE IN ('BIZ_DVSN_MCODE_RQ_TYPE_OE', 'BIZ_DVSN_MCODE_RQ_TYPE_REPM', 'BIZ_DVSN_MCODE_RQ_TYPE_RESCM', 'BIZ_DVSN_MCODE_RQ_TYPE_RACING')
+						AND #{search.userDeptCode} IN ('00004335') /* 57044304	Consumer마케팅담당 :: 00004335	상품전략팀 */
+							THEN 1
+					WHEN 
+						CUSTOMER_CODE = 'BIZ_DVSN_MCODE_RQ_TYPE_TB'
+						AND #{search.userDeptCode} IN ('00004626') /* 57018120	Commercial마케팅담당 :: 00004626	Commercial PM팀  */
+							THEN 1
+					ELSE 0 
+					END
+				END
+			)
+			
+			UNION ALL
+			
+			SELECT 
+				REQUEST_NO AS DOC_NO
+				, DESCRIPTION
+				, NVL(F_GET_CODEVALUE(STATUS, 'CODE_NAME'), STATUS) AS STATUS
+				, CREATE_USER_ID
+				, REQUEST_DATE
+				
+				, 'PRODUCT_DEVELOPMENT_REQUEST_RECEIPT_LIST' AS MENU_ID
+				, UUID AS REQ_ID
+				, NVL(F_GET_CODEVALUE(PRODUCT_LINE, 'CODE_NAME'), PRODUCT_LINE) || NVL2(PRODUCT_LINE, ') ', '') || DESCRIPTION AS DESCRIPTION_FULL
+			FROM TBL_PRODUCT_DEV_REQ
+			WHERE 1=1
+			AND STATUS IN ('BIZ_STT_MCODE_RQ_REQUEST', 'Waiting')
+			AND REQUEST_DATE IS NOT NULL
+			AND 1 = (
+				CASE WHEN #{search.userId} IN ('em180401', 'admin') THEN 1
+				ELSE
+					CASE WHEN 
+						PRODUCT_LINE = 'PC/LT' 
+						AND #{search.userDeptCode} IN ('00004335', '57044306', '57044307', '57044308') 
+						/* 57044304	Consumer마케팅담당 :: 00004335	상품전략팀 | 57044306	Consumer PM1팀 | 57044307	Consumer PM2팀 | 57044308	Consumer PM3팀 */
+							THEN 1
+					WHEN 
+						PRODUCT_LINE = 'TBR'
+						AND #{search.userDeptCode} IN ('00004626') /* 57018120	Commercial마케팅담당 :: 00004626	Commercial PM팀  */
+							THEN 1
+					ELSE 0
+					END
+				END
+			)
+			
+			UNION ALL
+			
+			SELECT
+				M.MATTER_NO AS DOC_NO
+				, M.PIC_TIC || ' ' || M.PIC_MATTER_TITLE AS DESCRIPTION
+				, 'REQUEST' AS STATUS
+				, M.CREATE_USER_ID
+				, NVL(M.UPDATE_DATE, M.CREATE_DATE) AS REQUEST_DATE
+				
+				, 'PRODUCT_DEVELOPMENT_PIC_MATTER' AS MENU_ID
+				, M.PIC_MATTER_UID AS REQ_ID
+				, M.PIC_TIC || ' ' || M.PIC_MATTER_TITLE AS DESCRIPTION_FULL
+			FROM T_PIC_MATTER M
+			
+				LEFT JOIN T_PIC_PROGRESS_STATUS S
+					ON S.PIC_MATTER_UID = M.PIC_MATTER_UID
+					
+			WHERE 1=1 
+			AND M.SUBMSN_DATE IS NULL
+			AND M.MATTER_TYPE IN ('M', 'D', 'S')
+			AND 1 = (
+				CASE WHEN NVL(S.REQ_STATUS, 'R') NOT IN ('B', 'Y') OR NVL(S.FINAL_STATUS, 'R') IN ('B', 'Y') THEN  /* PM확인전 PM팀장확인 후는 조회 안됨 */
+					0
+				ELSE
+				
+					CASE WHEN M.MATTER_TYPE IN ('M', 'D') THEN  /* M:모델, D:확산  */
+					
+						CASE WHEN NVL(S.RD_STATUS, 'R') IN ('B', 'Y') AND NVL(S.SCM_STATUS, 'R') IN ('B', 'Y') THEN  /* R*D, SCM 확인 후 */
+							 /* only PM팀장 확인 가능 */
+							CASE WHEN NVL(S.FINAL_STATUS, 'R') NOT IN ('B', 'Y') AND #{search.userUuid} = F_GET_MENU_CUSTOM_AUTH('PIC_ADMIN_MNG', #{search.userUuid}) THEN 1 ELSE 0 END
+						WHEN NVL(S.RD_STATUS, 'R') NOT IN ('B', 'Y') AND #{search.userUuid} = F_GET_MENU_CUSTOM_AUTH('PIC_ADMIN_RND', #{search.userUuid}) THEN
+							1
+						WHEN NVL(S.SCM_STATUS, 'R') NOT IN ('B', 'Y') AND #{search.userUuid} = F_GET_MENU_CUSTOM_AUTH('PIC_ADMIN_SCM', #{search.userUuid}) THEN
+							1
+						ELSE
+							0
+						END
+					
+					ELSE  /* S:일정변경 */
+					
+						CASE WHEN NVL(S.RD_STATUS, 'R') IN ('B', 'Y') THEN  /* R*D 확인 후 */
+							/* only PM팀장 확인 가능 */
+							CASE WHEN NVL(S.FINAL_STATUS, 'R') NOT IN ('B', 'Y') AND #{search.userUuid} = F_GET_MENU_CUSTOM_AUTH('PIC_ADMIN_MNG', #{search.userUuid}) THEN 1 ELSE 0 END
+							
+						WHEN NVL(S.RD_STATUS, 'R') NOT IN ('B', 'Y') AND #{search.userUuid} = F_GET_MENU_CUSTOM_AUTH('PIC_ADMIN_RND', #{search.userUuid}) THEN 
+							1
+						ELSE
+							0
+						END
+					
+					END
+				
+				END
+			)
+			
+			ORDER BY REQUEST_DATE DESC
+		) A
+		OFFSET #{page.offset} ROWS FETCH FIRST #{page.size} ROWS ONLY
+		]]>
+	</select>
+	
+	<resultMap type="map" id="selectMessageContent">
+		<result property="COMMENTS" column="COMMENTS" jdbcType="CLOB" javaType="java.lang.String" />
+	</resultMap>
+	<select id="selectSendMessageList" parameterType="map" resultType="map" resultMap="selectMessageContent">
+		/* MainPortletMapper.selectSendMessageList */
+		<![CDATA[ 	
+		SELECT
+			A.USER_MESSAGE_UID
+			, A.MENU_ID
+			, (
+				SELECT I.CODE FROM FC_MENU M 
+					JOIN FC_I18N I 
+						ON M.I18N_ID = I.ID 
+				WHERE M.MENU_ID = A.MENU_ID
+			) AS I18N_CODE
+			, A.ARTICLE_ID
+			, A.TASK_DVSN
+			
+			, A.COMMENTS
+			, TO_CHAR(A.CREATE_DATE, 'YYYY-MM-DD HH24:MI') AS CREATE_DATE
+			, TO_CHAR(COUNT(*) OVER()) AS TOTAL_CNT
+		FROM (
+			SELECT
+				USER_MESSAGE_UID
+				, MENU_ID
+				, ARTICLE_ID
+				, TASK_DVSN
+				, COMMENTS
+				
+				, CREATE_DATE
+			FROM T_USER_MESSAGE
+			WHERE 1=1
+			AND CREATE_USER_ID = #{search.userId}
+			AND USER_MESSAGE_UID IN (
+				SELECT M.USER_MESSAGE_UID FROM T_USER_MESSAGE M
+				
+					JOIN FC_USER_NOTICE N
+						ON M.USER_MESSAGE_UID = N.ARTICLE_ID
+						AND N.RULE_TYPE = 'MESSAGE'
+						AND M.CREATE_USER_ID = #{search.userId}
+			)
+			
+			UNION ALL
+			
+			SELECT
+				P.PROGRESS_UID AS USER_MESSAGE_UID
+				, (SELECT M1.MENU_ID FROM FC_MENU M1 WHERE M1.ID = T.MENU_ID) AS MENU_ID
+				, P.PROJECT_UID AS ARTICLE_ID
+				, P.PROGRESS_DVSN AS TASK_DVSN
+				, P.CONTENT AS COMMENTS
+				
+				, P.CREATE_DATE
+			FROM T_PROJECT_PROGRESS_HIS P
+			
+				JOIN (
+					SELECT DISTINCT
+						H.PROGRESS_UID
+						, N.MENU_ID
+					FROM T_PROJECT_PROGRESS_HIS H
+					
+						JOIN FC_USER_NOTICE N
+							ON H.PROGRESS_UID = N.ARTICLE_ID
+							AND N.RULE_TYPE = 'MESSAGE'
+							AND H.PROGRESS_DVSN = 'COMMUN'
+							AND H.CREATE_USER_ID = #{search.userId}
+				) T
+					ON P.PROGRESS_UID = T.PROGRESS_UID
+			
+			WHERE P.PROGRESS_DVSN = 'COMMUN'
+			
+			ORDER BY CREATE_DATE DESC
+		) A
+		OFFSET #{page.offset} ROWS FETCH FIRST #{page.size} ROWS ONLY
+		]]>
+	</select>
+	
+	<select id="selectSendMessageTargetList" parameterType="string" resultType="map">
+		/* MainPortletMapper.selectSendMessageTargetList */
+		SELECT
+			N.TARGET_USER_ID
+			, N.ARTICLE_ID
+			, TO_CHAR(N.NOTICE_DATE, 'YYYY-MM-DD HH24:MI') AS NOTICE_DATE
+			, TO_CHAR(N.CONFIRM_DATE, 'YYYY-MM-DD HH24:MI') AS CONFIRM_DATE
+			, U.NAME
+			, U.NAME_EN
+			, O.DEPT_NAME
+			, O.DEPT_NAME_EN
+			, U.NAME || '(' || O.DEPT_NAME ||  ')' AS TARGET_NAME
+		FROM FC_USER_NOTICE N
+		
+			JOIN FC_USERS U
+				ON N.TARGET_USER_ID = U.UUID
+			
+			JOIN FC_ORGANIZATION O
+				ON U.DEPT_CODE = O.DEPT_CODE
+				
+		WHERE 1=1
+		AND N.ARTICLE_ID = #{messageId} 
+	</select>
+	
+	<select id="selectBbsNoticeQna" parameterType="map" resultType="map">
+		/* MainPortletMapper.selectBbsNoticeQna */
+		<![CDATA[ 	
+		SELECT
+			A.BBS_UID
+			, A.TITLE
+			, A.BBS_TYPE
+			, TO_CHAR(A.REG_DATE, 'YYYY-MM-DD') AS REG_DATE
+			, TO_CHAR(A.REG_DATE, 'YYYY-MM-DD HH24:MI') AS REG_DATE_DT
+			
+			, A.REG_USER_ID
+			, A.NAME
+			, A.NAME_EN
+			, TO_CHAR(COUNT(*) OVER()) AS TOTAL_CNT
+		FROM (
+			SELECT
+				BBS.BBS_UID
+				, BBS.TITLE
+				, BBS.BBS_TYPE
+				, BBS.REG_DATE
+				, BBS.REG_USER_ID
+				
+				, U.NAME
+				, U.NAME_EN
+			FROM (
+				SELECT
+					BBS_UID
+					, TITLE
+					, BBS_TYPE
+					, NVL(UPDATE_DATE, CREATE_DATE) AS REG_DATE
+					, NVL(UPDATE_USER_ID, CREATE_USER_ID) AS REG_USER_ID
+				FROM T_BBS
+				WHERE 1=1
+				AND CREATE_DATE > SYSDATE - 365
+				AND DELETE_YN = 'N'
+				AND BBS_TYPE = NVL(#{search.bbsType}, 'BBS_TYPE_NOTICE')
+			) BBS
+			
+				LEFT JOIN FC_USERS U
+					ON BBS.REG_USER_ID = U.UUID
+					
+			ORDER BY BBS.REG_DATE DESC
+		) A
+		OFFSET #{page.offset} ROWS FETCH FIRST #{page.size} ROWS ONLY
+		]]>
+	</select>
+	
+	<select id="selectBbsRecent" parameterType="map" resultType="map">
+		/* MainPortletMapper.selectBbsRecent */
+		<![CDATA[ 	
+		SELECT
+			A.BBS_UID
+			, A.TITLE
+			, A.BBS_TYPE
+			, TO_CHAR(A.REG_DATE, 'YYYY-MM-DD') AS REG_DATE
+			, TO_CHAR(A.REG_DATE, 'YYYY-MM-DD HH24:MI') AS REG_DATE_DT
+			
+			, A.REG_USER_ID
+			, A.NAME
+			, A.NAME_EN
+			, TO_CHAR(COUNT(*) OVER()) AS TOTAL_CNT
+		FROM (
+			SELECT
+				BBS.BBS_UID
+				, BBS.TITLE
+				, BBS.BBS_TYPE
+				, BBS.REG_DATE
+				, BBS.REG_USER_ID
+				
+				, U.NAME
+				, U.NAME_EN
+			FROM (
+				SELECT
+					BBS_UID
+					, TITLE
+					, BBS_TYPE
+					, NVL(UPDATE_DATE, CREATE_DATE) AS REG_DATE
+					, NVL(UPDATE_USER_ID, CREATE_USER_ID) AS REG_USER_ID
+				FROM T_BBS
+				WHERE 1=1
+				AND CREATE_DATE > SYSDATE - 365
+				AND DELETE_YN = 'N'
+				AND BBS_TYPE IN (
+					SELECT CODE FROM FC_CODE_MNG
+					WHERE P_ID = (SELECT ID FROM FC_CODE_MNG WHERE CODE = 'BBS_TYPE')
+					AND PROPERTY_1 = 'BBS'
+					AND STATUS = 'NORMAL'
+				)
+			) BBS
+			
+				LEFT JOIN FC_USERS U
+					ON BBS.REG_USER_ID = U.UUID
+					
+			ORDER BY BBS.REG_DATE DESC
+		) A
+		OFFSET #{page.offset} ROWS FETCH FIRST #{page.size} ROWS ONLY
+		]]>
+	</select>
+
+</mapper>

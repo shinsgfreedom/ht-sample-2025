@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- TODO mapper xml 샘플입니다. 해당 프로젝트 환경에 맞게 꼭 변경해서 사용하세요!-->
+<mapper namespace="com.hankooktech.shep.main.mypage.MyPageMapper">
+	<select id="list" resultType="map" parameterType="map">
+		SELECT 1 from DUAL
+	</select>
+
+	<delete id="deleteTempFiles">
+		DELETE FROM FC_ATTACH_FILE
+		WHERE CATEGORY = 'TEST_FILE_UPLOAD'
+	</delete>
+	
+</mapper>

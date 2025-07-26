@@ -1,0 +1,68 @@
+spring:
+  datasource:
+    url: jdbc:log4jdbc:oracle:thin:@//202.31.8.76:1521/DHKDORA2
+    username: SHEUSER
+    password: She_pw12#
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+  servlet:
+    multipart:
+      max-file-size: 10000MB
+      max-request-size: 10000MB
+      location: /Users/shinsg/upload
+  data:
+    web:
+      pageable:
+        max-page-size: 20000
+mybatis:
+  type-aliases-package: com.hankooktech.shep
+fc-config:
+#  o365-config:
+#    server-url: http://202.31.8.55:8080/o365/
+#    server-id: shep
+#    secret-key: f5d70d34808d
+#    timeout-seconds: 10
+  menu-base-package: com.hankooktech.shep
+  project-path: /Users/shinsg/Work/2025/shep
+  auth-check: true
+  snapshot-my-url: http://localhost:8081 # "스냅샷 서버 -> 현재 서버"에 요청하기 위한 url origin, 사용하지않는경우에는 생략 가능 ex) http://10.8.8.8:8080
+  base-protocol: http://
+  base-url: //localhost:8081
+  file-config:
+    file-root-path: /Users/shinsg/upload/shep # 파일 업로드 디렉토리
+    clear-garbage-files: true
+  sso:
+    ssid: 000   # sso 서버 발급 아이디
+    success-redirect-url: /MAIN/main.html   # sso 성공 후 이동할 첫 페이지
+    my-domain: localhost   # referer 체크를 위한 자신의 도메인(보안 체크시 사용)
+    arena-domain: http://devdwp.hankooktire.com   # referer 체크를 위한 자신의 도메인(보안 체크시 사용)
+#  notice-config:
+#    server-name:
+#    server-key:
+#    server-url: http://ws.cosmo.hankooktech.com:8095
+#  approval-config:
+#    system-id:
+#    system-key:
+#    cosmo-url: https://cosmo-idpdev.hankooktech.com
+#    mail-send-enabled: false
+#    notice-send-enabled: false
+#    test-mail-to: em220913@hankooktech.com
+#    test-notice-to: c00cfe9f807d6d9a4ba994c862082275
+#    my-appr-menu-key : MY_APPR_REOP
+#    my-appr-menu-link : https://localhost:8081/MY_APPR_REOP/index.html
+#    sso-active : false
+#    use-time: UTC
+#search:
+#  url: http://202.31.8.55:8080/api/shep/
+server:
+  port: 8081
+  error:
+    include-exception: true
+    include-stacktrace: always
+    path: /error
+    whitelabel.enabled: false
+batch:
+  jenkins:
+    auth: em180401:11b318e29bb1d9d527a7780211b4b79bd6
+unity-log:
+  system-id:
+  system-key:

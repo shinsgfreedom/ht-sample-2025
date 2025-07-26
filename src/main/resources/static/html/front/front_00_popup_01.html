@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>SHE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 화면용 css : 공통에서 제공중이니 개발시 삭제 -->
+<link rel="stylesheet" href="../../core/core-admin.css" type="text/css">
+<link rel="stylesheet" href="../../core/fc-tab.css" type="text/css">
+<link rel="stylesheet" href="../../common_f/css/select2.min.css" type="text/css">
+<link rel="stylesheet" href="../../common_f/css/select2-bootstrap4.min.css" type="text/css">
+
+<!-- front 기본 css -->
+<link rel="stylesheet" href="../../common_f/css/style.css" type="text/css">
+<link rel="stylesheet" href="../../front/css/front.css" type="text/css">
+
+
+<!-- 화면용 jquery 버전 : 공통에서 제공중이니 개발시 삭제 -->
+<script type="text/javascript" src="../../common_f/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../../common_f/js/select2.min.js"></script>
+
+<!-- front 기본 js -->
+<script type="text/javascript" src="../../common_f/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../common_f/js/common-ui.js"></script>
+
+<script type="text/javascript" src="../../front/js/front-ui.js"></script>
+
+<script type="text/javascript">
+    $(function(){
+        /*popupLayer('#popup-wrap의 ID값')으로 오픈
+        기존 레이어팝업을 윈도우팝업으로 전환시에는 popupLayer()로 사용하지 말아주세요.*/
+        popupLayer('#popupSelForm');
+    });
+</script>
+</head>
+<body>
+
+
+<!-- 팝업 -->
+<script type="text/javascript">
+	$(function(){
+	});
+</script>
+<div class="popup-wrap" id="popupSelForm">
+	<div class="popup w440">
+        <div class="pop-head">
+            <h2 class="tit">불러올 평가항목 선택</h2>
+        </div>
+        <div class="pop-cont">
+
+            <div class="formbox-area">
+                <dl class="dl-formbox">
+                    <dt><span class="label">평가연도</span></dt>
+                    <dd>
+                        <select class="select1" style="width: 100%;">
+                            <option>2025</option>
+                        </select>
+                    </dd>
+                </dl>
+                <dl class="dl-formbox">
+                    <dt><span class="label">평가시기</span></dt>
+                    <dd>
+                        <select class="select1" style="width: 100%;">
+                            <option>상반기</option>
+                        </select>
+                    </dd>
+                </dl>
+                <dl class="dl-formbox">
+                    <dt><span class="label">평가그룹</span></dt>
+                    <dd>
+                        <select class="select1" style="width: 100%;">
+                            <option>3. 관리감독자</option>
+                        </select>
+                    </dd>
+                </dl>
+            </div>
+
+		</div>
+		<div class="pop-foot">
+			<a href="#" class="btn-l typeN"><span class="txt">취소</span></a>
+			<a href="#" class="btn-l typeP"><span class="txt">저장</span></a>
+		</div>
+		<button type="button" class="close"><span class="ix-txt">CLOSE</span></button>
+    </div>
+</div>
+<!-- //팝업 -->
+
+</body>
+</html>
