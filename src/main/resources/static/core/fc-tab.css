@@ -78,7 +78,7 @@
 .fc-tab > li i[ref=expand],
 .fc-tab > li i[ref=refresh],
 .fc-tab > li i[ref=close] {
-    display: none;
+    /* display: none; */
 }
 
 .fc-tab > li:hover i[ref=drag-bar],

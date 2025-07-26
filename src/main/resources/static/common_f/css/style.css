@@ -495,7 +495,7 @@ input:focus::-ms-input-placeholder {color: transparent;}
 #historyTab .fc-tab > li .fc-tab-left-control .fa-thumbtack::before {width: 12px; height: 12px; background-image: url(../images/common/ico-t-fixing-w.png);}
 #historyTab .fc-tab > li .fc-tab-left-control .fa-bars::before {background-image: url(../images/common/ico-t-bar-w.png);}
 #historyTab .fc-tab > li .fc-tab-right-control .fa-expand::before {background-image: url(../images/common/ico-t-zoom-w.png);}
-#historyTab .fc-tab > li .fc-tab-right-control .fa-redo-alt::before {background-image: url(../images/common/ico-t-refresh-w.png);}
+#historyTab .fc-tab > li .fc-tab-right-control .fa-redo-alt::before {background-image: url(../images/common/ico-t-refresh-b.png);}
 #historyTab .fc-tab > li .fc-tab-right-control .fa-times::before {background-image: url(../images/common/ico-dels-w.png);}
 
 #historyTab .fc-tab > li.selected .fc-tab-left-control .fa-thumbtack::before {background-image: url(../images/common/ico-history-pin-off.png);}
@@ -508,7 +508,7 @@ input:focus::-ms-input-placeholder {color: transparent;}
 #historyTab .fc-tab > li .fc-tab-right-control .fa-expand::before,
 #historyTab .fc-tab > li.type-ds.selected .fc-tab-right-control .fa-expand::before {background-image: url(../images/common/ico-history-full.png);}
 #historyTab .fc-tab > li .fc-tab-right-control .fa-redo-alt::before,
-#historyTab .fc-tab > li.type-ds.selected .fc-tab-right-control .fa-redo-alt::before {background-image: url(../images/common/ico-t-refresh-w.png);}
+#historyTab .fc-tab > li.type-ds.selected .fc-tab-right-control .fa-redo-alt::before {background-image: url(../images/common/ico-t-refresh-b.png);}
 #historyTab .fc-tab > li .fc-tab-right-control .fa-times::before,
 #historyTab .fc-tab > li.type-ds.selected .fc-tab-right-control .fa-times::before {background-image: url(../images/common/ico-history-close.png);}
 #historyTab .fc-tab > li .fc-tab-left-control .fa-bars::before,

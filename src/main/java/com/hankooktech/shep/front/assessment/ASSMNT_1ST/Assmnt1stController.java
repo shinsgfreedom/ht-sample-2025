@@ -4,10 +4,10 @@ import com.hankooktech.fc._infra.UserSession;
 import com.hankooktech.fc._infra.UserSessionDTO;
 import com.hankooktech.fc.annotations.FcMenuId;
 import com.hankooktech.fc.annotations.FcReadable;
-import com.hankooktech.shep.sample.SampleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import static com.hankooktech.shep.front.assessment.ASSMNT_1ST.Assmnt1stController.MENU_ID;
@@ -22,7 +22,11 @@ public class Assmnt1stController {
      * 메뉴 ID
      */
     public static final String MENU_ID = "ASSMNT_1ST";
-    private final SampleService sampleService;
+
+    @ModelAttribute("menuId")
+    public String getMenuId(){
+        return MENU_ID;
+    }
 
     /**
      * 읽기 가능한 랜딩 페이지

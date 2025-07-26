@@ -13,7 +13,7 @@
 			arr[sourceIdx] = temp
 		}
 
-		let TabRenderer = function (opts) {
+		let TabRenderer = function (    opts) {
 			//    this.targetEl = $(opts.targetEl)
 			this.targetTabEl = $(opts.targetTabEl)
 			this.targetTabContEl = $(opts.targetTabContEl)

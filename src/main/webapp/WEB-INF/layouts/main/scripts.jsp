@@ -7,8 +7,8 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/common/js/jquery.mCustomScrollbar.concat.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/assets/scripts/ag-grid.wrapper.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/js/front-ui.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/front/js/com.htg.TabRenderer.js?${rand}"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/front/js/com.htg.layout.js?${rand}"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/front/js/com.htg.TabRenderer.js?${rand}"></script>
 <script>
 	var CONTEXT_ROOT = '${pageContext.request.contextPath}';
 	var FROALA_EDITOR_KEY = "8JF3bG3A5C3A2B2C1yQNDMIJd1IQNSEa2EUAf1XVFQa1EaD4D3B2C2A18A14A7C9D4C3==";
